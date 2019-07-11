@@ -1,0 +1,28 @@
+{
+  "name": "dmdcu-contracts",
+  "version": "0.0.1",
+  "description": "Diamond certified unique smart contracts",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SurfingNerd/dmdcu-contracts.git"
+  },
+  "keywords": [
+    "dmd",
+    "diamond",
+    "blockchain",
+    "unique"
+  ],
+  "author": "thomas.haller@lab10.coop",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/SurfingNerd/dmdcu-contracts/issues"
+  },
+  "homepage": "https://github.com/SurfingNerd/dmdcu-contracts#readme"
+}

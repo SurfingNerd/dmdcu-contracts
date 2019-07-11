@@ -1,2 +1,3 @@
-# dmdcu-contracts
-Diamond certified unique smart contracts
+# Diamond certified unique smart contracts
+
+truffle & solidity

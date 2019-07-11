@@ -24,5 +24,8 @@
   "bugs": {
     "url": "https://github.com/SurfingNerd/dmdcu-contracts/issues"
   },
-  "homepage": "https://github.com/SurfingNerd/dmdcu-contracts#readme"
+  "homepage": "https://github.com/SurfingNerd/dmdcu-contracts#readme",
+  "dependencies": {
+    "openzeppelin-solidity": "^2.3.0"
+  }
 }

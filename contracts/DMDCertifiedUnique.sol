@@ -1,8 +1,9 @@
-pragma solidity >=0.4.21 <0.6.0;
+pragma solidity >=0.5.8 <0.6.0;
 
 import 'openzeppelin-solidity/contracts/token/ERC721/ERC721.sol';
+import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
 
-contract DMDCertifiedUnique is ERC721 {
+contract DMDCertifiedUnique is ERC721, Ownable {
 
     struct Certifier {
 
@@ -14,6 +15,14 @@ contract DMDCertifiedUnique is ERC721 {
 
         //main ethereum address used by the certifier.
         address mainAddress;
+
+        string website;
+
+        string text;
+
+        bytes32 imageIPFSAddress;
+
+        uint timestampAdded;
     }
 
     //represents a modified motorcycle
@@ -22,6 +31,9 @@ contract DMDCertifiedUnique is ERC721 {
         address owner;
         bytes32 name;
         bytes32 nameBaseModel;
+        //planned identifiers for later uses.
+        bytes32 additionalIdentifier1;
+        bytes32 additionalIdentifier2;
 
         string modificationPlainText;
 
@@ -49,5 +61,22 @@ contract DMDCertifiedUnique is ERC721 {
         //1: modern bike
         //2: state of the art high end technology
         uint8 techGrade;
+    }
+
+    Certifier[] public certifiers;
+    //mapping(bytes32 => uint32) public certifiersNameIndex;
+
+    function addCertifier(bytes32 name, bytes32 officialID, address mainAddress,string memory website, string memory text, bytes32 imageIPFSAddress)
+    public
+    onlyOwner
+    returns (bool)
+    {
+        
+        //require(certifiersNameIndex[name] == 0, "A Certifier with this name already exists!");
+
+        certifiers.push(Certifier(name, officialID, mainAddress, website, text, imageIPFSAddress, block.timestamp));
+        //todo: emit new certifier event.
+
+        return true;
     }
 }

@@ -36,4 +36,15 @@ contract('DMDCertifiedUnique', (accounts) => {
 
   })
 
+
+  //V2 requirements
+  // as a certifier
+  // - i can change my data
+  //
+  // as a owner
+  // - i can change the address of a certifier (use case: certifier lost his keys)
+  
+
+  
+
 });

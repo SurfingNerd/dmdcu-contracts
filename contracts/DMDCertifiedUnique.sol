@@ -65,18 +65,32 @@ contract DMDCertifiedUnique is ERC721, Ownable {
 
     Certifier[] public certifiers;
     //mapping(bytes32 => uint32) public certifiersNameIndex;
+    mapping(address => ModdedMoto) public moddedMotos;
+
 
     function addCertifier(bytes32 name, bytes32 officialID, address mainAddress,string memory website, string memory text, bytes32 imageIPFSAddress)
     public
     onlyOwner
     returns (bool)
     {
-        
         //require(certifiersNameIndex[name] == 0, "A Certifier with this name already exists!");
 
         certifiers.push(Certifier(name, officialID, mainAddress, website, text, imageIPFSAddress, block.timestamp));
         //todo: emit new certifier event.
 
+        return true;
+    }
+
+    function addMotoModification(address owner,bytes32 name,bytes32 nameBaseModel,bytes32 additionalIdentifier1,bytes32 additionalIdentifier2, string memory modificationPlainText,bytes32 imageRessourcesIPFSAddress,uint32 horsepower,uint32 weight,uint32 topSpeed,uint64 modificationDate,uint8 vintageGrade,uint8 techGrade)
+    public
+    returns (bool) {
+
+        //uint32 successorID,
+        //uint32 predecessorID = 0;
+        //uint32 certifierID = 0;
+        //todo: only a certifier can add a MotoModifiction
+        //todo: a motoModification can only be done if the owner allows that
+        //ModdedMoto newModdedMoto = ModdedMoto(owner, name, nameBaseModel, additionalIdentifier1, additionalIdentifier2, modificationPlainText, imageRessourcesIPFSAddress, certifierID);
         return true;
     }
 }

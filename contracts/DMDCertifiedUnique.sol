@@ -32,8 +32,8 @@ contract DMDCertifiedUnique is ERC721, Ownable {
         bytes32 name;
         bytes32 nameBaseModel;
         //planned identifiers for later uses.
-        bytes32 additionalIdentifier1;
-        bytes32 additionalIdentifier2;
+        //bytes32 additionalIdentifier1;
+        //bytes32 additionalIdentifier2;
 
         string modificationPlainText;
 
@@ -49,23 +49,25 @@ contract DMDCertifiedUnique is ERC721, Ownable {
         uint32 weight;
         uint32 topSpeed;
 
-        //modification time: unix time with 64 bit to bypass Y2038 problem (https://en.wikipedia.org/wiki/Unix_time https://en.wikipedia.org/wiki/Year_2038_problem)
+    //     //modification time: unix time with 64 bit to bypass Y2038 problem (https://en.wikipedia.org/wiki/Unix_time https://en.wikipedia.org/wiki/Year_2038_problem)
         uint64 modificationDate;
 
-        //0: no vintage
-        //1: has vintage elements
-        //2: pure vintage
+    //     //0: no vintage
+    //     //1: has vintage elements
+    //     //2: pure vintage
         uint8 vintageGrade;
 
-        //0: old base
-        //1: modern bike
-        //2: state of the art high end technology
+    //     //0: old base
+    //     //1: modern bike
+    //     //2: state of the art high end technology
         uint8 techGrade;
     }
 
     Certifier[] public certifiers;
+    ModdedMoto[] public motos;
+
     //mapping(bytes32 => uint32) public certifiersNameIndex;
-    mapping(address => ModdedMoto) public moddedMotos;
+    //mapping(address => ModdedMoto) public moddedMotos;
 
 
     function addCertifier(bytes32 name, bytes32 officialID, address mainAddress,string memory website, string memory text, bytes32 imageIPFSAddress)
@@ -81,16 +83,26 @@ contract DMDCertifiedUnique is ERC721, Ownable {
         return true;
     }
 
-    function addMotoModification(address owner,bytes32 name,bytes32 nameBaseModel,bytes32 additionalIdentifier1,bytes32 additionalIdentifier2, string memory modificationPlainText,bytes32 imageRessourcesIPFSAddress,uint32 horsepower,uint32 weight,uint32 topSpeed,uint64 modificationDate,uint8 vintageGrade,uint8 techGrade)
+    function addMotoModification(address owner,bytes32 name,bytes32 nameBaseModel,
+        string memory modificationPlainText,bytes32 imageRessourcesIPFSAddress,
+        uint32 horsepower,uint32 weight,uint32 topSpeed,uint64 modificationDate,
+        uint8 vintageGrade,uint8 techGrade)
     public
-    returns (bool) {
+    returns (uint256) {
 
-        //uint32 successorID,
-        //uint32 predecessorID = 0;
-        //uint32 certifierID = 0;
+        uint32 successorID = 0;
+        uint32 predecessorID = 0;
+        uint32 certifierID = 0;
         //todo: only a certifier can add a MotoModifiction
         //todo: a motoModification can only be done if the owner allows that
-        //ModdedMoto newModdedMoto = ModdedMoto(owner, name, nameBaseModel, additionalIdentifier1, additionalIdentifier2, modificationPlainText, imageRessourcesIPFSAddress, certifierID);
-        return true;
+        
+        ModdedMoto memory moto = ModdedMoto(owner, name, nameBaseModel, modificationPlainText, imageRessourcesIPFSAddress,
+            successorID, predecessorID, certifierID,
+            horsepower, weight, topSpeed,
+            modificationDate, vintageGrade, techGrade);
+
+        uint256 result = motos.push(moto);
+
+        return result;
     }
 }

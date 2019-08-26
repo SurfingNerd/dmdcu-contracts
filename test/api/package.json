@@ -1,0 +1,11 @@
+{
+  "name": "dmdcu-contracts-api",
+  "version": "1.0.0",
+  "description": "js/ts api for interacting with dmdcu-contracts",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

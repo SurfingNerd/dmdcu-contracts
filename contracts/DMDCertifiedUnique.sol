@@ -26,7 +26,6 @@ contract DMDCertifiedUnique is ERC721, Ownable {
     }
 
     //represents a modified motorcycle
-    
     address[] public dataOwner;
     bytes32[] dataName;
     bytes32[] dataNameBaseModel;
@@ -81,29 +80,17 @@ contract DMDCertifiedUnique is ERC721, Ownable {
         return true;
     }
 
-    function addMotoModification(address owner,bytes32 name,bytes32 nameBaseModel,
+    function addMotoModification(address owner, uint32 dataPredecessorID, bytes32 name,bytes32 nameBaseModel,
         string memory modificationPlainText,bytes32 imageRessourcesIPFSAddress,
         uint32 horsepower,uint32 weight,uint32 topSpeed,uint64 modificationDate,
         uint8 vintageGrade,uint8 techGrade)
     public
     returns (uint256) {
 
-        //uint32 successorID = 0;
-        //uint32 predecessorID = 0;
-        //uint32 certifierID = 0;
-        //todo: only a certifier can add a MotoModifiction
-        //todo: a motoModification can only be done if the owner allows that
-        // ModdedMoto memory moto = ModdedMoto(owner, name, nameBaseModel, modificationPlainText, imageRessourcesIPFSAddress,
-        //     successorID, predecessorID, certifierID,
-        //     horsepower, weight, topSpeed,
-        //     modificationDate, vintageGrade, techGrade);
-
-        //
-        //todo: decide between: 
+        // todo: decide between:
         // - no storage optimization, easy to understand - high costs.
         // - verify that all information is written to the same slot.
         // - i optimize memory usage by placing 1 index, and don't write null values
-
         uint256 result = dataOwner.push(owner);
         dataName.push(name);
         dataNameBaseModel.push(nameBaseModel);

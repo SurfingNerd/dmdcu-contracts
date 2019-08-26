@@ -36,7 +36,7 @@ contract DMDCertifiedUnique is ERC721, Ownable {
 
     string[] dataModificationPlainText;
 
-        //IPFS Hash with the imageRessources. (to be defined what is expected)
+    //IPFS Hash with the imageRessources. (to be defined what is expected)
     bytes32[] dataImageRessourcesIPFSAddress;
 
     uint32[] dataSuccessorID;
@@ -58,7 +58,7 @@ contract DMDCertifiedUnique is ERC721, Ownable {
 
     //     //0: old base
     //     //1: modern bike
-    //     //2: state of the aaddMotoModificationaddMotoModificationrt high end technology
+    //     //2: state of the art high end technology
     uint8[] dataTechGrade;
 
     Certifier[] public certifiers;
@@ -117,7 +117,7 @@ contract DMDCertifiedUnique is ERC721, Ownable {
         dataTopSpeed.push(topSpeed);
         dataModificationDate.push(modificationDate);
         dataVintageGrade.push(vintageGrade);
-        dataTechGaddMotoModificationrade.push(techGrade);
+        dataTechGrade.push(techGrade);
 
 
         //uint256 result = motos.push(moto);

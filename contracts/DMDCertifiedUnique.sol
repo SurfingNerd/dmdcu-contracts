@@ -80,7 +80,7 @@ contract DMDCertifiedUnique is ERC721, Ownable {
         return true;
     }
 
-    function addMotoModification(address owner, uint32 dataPredecessorID, bytes32 name,bytes32 nameBaseModel,
+    function addMotoModification(address owner, uint32 predecessorID,uint32 certifierID,  bytes32 name,bytes32 nameBaseModel,
         string memory modificationPlainText,bytes32 imageRessourcesIPFSAddress,
         uint32 horsepower,uint32 weight,uint32 topSpeed,uint64 modificationDate,
         uint8 vintageGrade,uint8 techGrade)
@@ -97,8 +97,8 @@ contract DMDCertifiedUnique is ERC721, Ownable {
         dataModificationPlainText.push(modificationPlainText);
         dataImageRessourcesIPFSAddress.push(imageRessourcesIPFSAddress);
         dataSuccessorID.push(0);
-        dataPredecessorID.push(0);
-        dataCertifierID.push(0);
+        dataPredecessorID.push(predecessorID);
+        dataCertifierID.push(certifierID);
         dataHorsepower.push(horsepower);
         dataWeight.push(weight);
         dataTopSpeed.push(topSpeed);
@@ -106,6 +106,9 @@ contract DMDCertifiedUnique is ERC721, Ownable {
         dataVintageGrade.push(vintageGrade);
         dataTechGrade.push(techGrade);
 
+        if (predecessorID > 0) {
+            dataSuccessorID[predecessorID] = (uint32)(result);
+        }
 
         //uint256 result = motos.push(moto);
 

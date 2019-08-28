@@ -91,8 +91,15 @@ contract DMDCertifiedUnique is ERC721, Ownable {
         // - no storage optimization, easy to understand - high costs.
         // - verify that all information is written to the same slot.
         // - i optimize memory usage by placing 1 index, and don't write null values
-        uint256 result = dataOwner.push(owner);
-        dataName.push(name);
+
+        
+        //todo: tokenURI.
+        //super._setTokenURI(_tokenId, _tokenURI);
+
+        //uint256 result = dataOwner.push(owner);
+        uint256 tokenId = dataName.push(name);
+        super._mint(owner,tokenId);
+
         dataNameBaseModel.push(nameBaseModel);
         dataModificationPlainText.push(modificationPlainText);
         dataImageRessourcesIPFSAddress.push(imageRessourcesIPFSAddress);
@@ -107,12 +114,12 @@ contract DMDCertifiedUnique is ERC721, Ownable {
         dataTechGrade.push(techGrade);
 
         if (predecessorID > 0) {
-            dataSuccessorID[predecessorID] = (uint32)(result);
+            dataSuccessorID[predecessorID] = (uint32)(tokenId);
         }
 
         //uint256 result = motos.push(moto);
 
-        return result;
+        return tokenId;
         //return 0;
     }
 }

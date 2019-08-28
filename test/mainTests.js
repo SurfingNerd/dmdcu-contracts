@@ -16,6 +16,13 @@ contract('DMDCertifiedUnique', (accounts) => {
   const endConsumer2 = accounts[4];
   const endConsumer3 = accounts[5];
 
+  let uniquesContract;
+  it('contract deployment', async()=> {
+    //uniquesContract DMDCertifiedUnique
+    uniquesContract = await DMDCertifiedUnique.new({from: blockservOrganisation});
+
+  })
+
   it('blockservOrganisation adds certifier1', async()=> {
 
   })

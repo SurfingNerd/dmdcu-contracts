@@ -1,9 +1,11 @@
 // import { getLastBlockTimestamp } from './utils.mjs'; // ES6 imports seem still not to be a thing in nodejs
 //const utils = require('./utils');
 
-const api = require('./dmdcuApi.js');
+
+const api = require('./dmdcuApi.js/index.js');
 const DMDCertifiedUnique = artifacts.require('DMDCertifiedUnique');
 const BN = web3.utils.BN;
+
 
 contract('DMDCertifiedUnique', (accounts) => {
   console.log(`Accounts: ${accounts}`);
@@ -24,7 +26,9 @@ contract('DMDCertifiedUnique', (accounts) => {
   })
 
   it('blockservOrganisation adds certifier1', async()=> {
-
+    const result = await api.addNewCertifier('../build/contracts', uniquesContract.address, blockservOrganisation, 'certifier1', '001', 'Nomansland1', 'www.nomansland.example', 'a test certifier!', '');
+    console.log('certifier added:');
+    console.log(result);
   })
 
   it('certifier1 tries to add certifier2 but fails', async()=> {

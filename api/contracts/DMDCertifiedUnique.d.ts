@@ -20,6 +20,8 @@ export class DMDCertifiedUnique extends Contract {
 
     getApproved(tokenId: number | string): TransactionObject<string>;
 
+    certifiersAddressIndex(arg0: string): TransactionObject<BN>;
+
     ownerOf(tokenId: number | string): TransactionObject<string>;
 
     balanceOf(owner: string): TransactionObject<BN>;
@@ -74,10 +76,10 @@ export class DMDCertifiedUnique extends Contract {
       name: string | number[],
       officialID: string | number[],
       mainAddress: string,
-      website: string,
+      website: string | number[],
       text: string,
       imageIPFSAddress: string | number[]
-    ): TransactionObject<boolean>;
+    ): TransactionObject<BN>;
 
     addMotoModification(
       owner: string,

@@ -38,7 +38,12 @@ contract('DMDCertifiedUnique', (accounts) => {
   })
 
   it('certifier1 tries to add certifier2 but fails', async()=> {
-
+    try {
+      await api.addNewCertifier(web3, DMDCertifiedUnique.abi, uniquesContract.address, certifier1, 'certifier2', '002',certifier2, 'www.nomansland.example', 'a second test certifier!', '');
+    } catch (error) {
+      return;
+    }
+    throw new Error('addNewCertifier should fail, but it did not.');
   })
 
   it('certifier1 creates an certificate for endConsumer1', async()=> {

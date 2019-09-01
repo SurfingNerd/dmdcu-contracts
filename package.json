@@ -10,7 +10,7 @@
     "test": "tsc && truffle test",
     "build": "truffle compile",
     "typechain": "typechain --target web3-1.0.0 --outDir api/contracts './build/contracts/*.json'",
-    "start" : "npm-run-all build typechain test",
+    "start": "npm-run-all build typechain test",
     "tsc": "tsc"
   },
   "repository": {

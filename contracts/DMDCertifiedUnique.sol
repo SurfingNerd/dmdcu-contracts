@@ -80,38 +80,34 @@ contract DMDCertifiedUnique is ERC721, Ownable {
         return certifierID;
     }
 
-        function addMotoModificationDetails(uint256 tokenId, uint256 predecessorID, uint256 certifierID, bytes32 nameBaseModel,
-        string memory modificationPlainText,bytes32 imageRessourcesIPFSAddress,
-        uint32 horsepower,uint32 weight,uint32 topSpeed,uint64 modificationDate,
-        uint8 vintageGrade,uint8 techGrade)
+    function addMotoModificationDetails(uint256 tokenId, uint256 predecessorID, uint256 certifierID, bytes32 nameBaseModel,
+    string memory modificationPlainText,bytes32 imageRessourcesIPFSAddress,
+    uint32 horsepower,uint32 weight,uint32 topSpeed,uint64 modificationDate,
+    uint8 vintageGrade,uint8 techGrade)
     internal
     returns (bool) {
 
-        dataNameBaseModel.push(nameBaseModel);
-        dataModificationPlainText.push(modificationPlainText);
-        dataImageRessourcesIPFSAddress.push(imageRessourcesIPFSAddress);
-        dataSuccessorID.push(0);
-        dataPredecessorID.push(predecessorID);
-        dataCertifierID.push(certifierID);
-        dataHorsepower.push(horsepower);
-        dataWeight.push(weight);
-        dataTopSpeed.push(topSpeed);
-        dataModificationDate.push(modificationDate);
-        dataVintageGrade.push(vintageGrade);
-        dataTechGrade.push(techGrade);
-
-        if (predecessorID > 0) {
-            dataSuccessorID[predecessorID] = (uint32)(tokenId);
-        }
+        dataNameBaseModel[tokenId] = nameBaseModel;
+        dataModificationPlainText[tokenId] = modificationPlainText;
+        dataImageRessourcesIPFSAddress[tokenId] = imageRessourcesIPFSAddress;
+        dataCertifierID[tokenId] = certifierID;
+        dataHorsepower[tokenId] = horsepower;
+        dataWeight[tokenId] = weight;
+        dataTopSpeed[tokenId] = topSpeed;
+        dataModificationDate[tokenId] = modificationDate;
+        dataVintageGrade[tokenId] = vintageGrade;
+        dataTechGrade[tokenId] = techGrade;
 
         return true;
     }
 
+    // bytes32 nameBaseModel,
+    //     string memory modificationPlainText,bytes32 imageRessourcesIPFSAddress,
+    //     uint32 horsepower,uint32 weight,uint32 topSpeed,uint64 modificationDate,
+    //     uint8 vintageGrade,uint8 techGrade
 
-    function addMotoModification(address owner, uint256 predecessorID,address certifierAddress,  bytes32 name,bytes32 nameBaseModel,
-        string memory modificationPlainText,bytes32 imageRessourcesIPFSAddress,
-        uint32 horsepower,uint32 weight,uint32 topSpeed,uint64 modificationDate,
-        uint8 vintageGrade,uint8 techGrade)
+
+    function addMotoModification(address owner, uint256 predecessorID,address certifierAddress, bytes32 name)
     public
     returns (uint256) {
 
@@ -129,11 +125,28 @@ contract DMDCertifiedUnique is ERC721, Ownable {
 
         uint256 tokenId = dataName.push(name);
         super._mint(owner,tokenId);
+        require(dataCertifierID.push(certifierID) == tokenId, 'internal logical error. array IDs not consistent');
 
-        addMotoModificationDetails(tokenId,predecessorID, certifierID, nameBaseModel,
-        modificationPlainText, imageRessourcesIPFSAddress,
-        horsepower, weight, topSpeed, modificationDate,
-        vintageGrade, techGrade);
+        require(dataNameBaseModel.push(0) == tokenId, 'internal logical error. array IDs not consistent');
+        require(dataModificationPlainText.push("") == tokenId, 'internal logical error. array IDs not consistent');
+        require(dataImageRessourcesIPFSAddress.push(0) == tokenId, 'internal logical error. array IDs not consistent');
+        require(dataSuccessorID.push(0) == tokenId, 'internal logical error. array IDs not consistent');
+        require(dataPredecessorID.push(predecessorID) == tokenId, 'internal logical error. array IDs not consistent');
+        require(dataHorsepower.push(0) == tokenId, 'internal logical error. array IDs not consistent');
+        require(dataWeight.push(0) == tokenId, 'internal logical error. array IDs not consistent');
+        require(dataTopSpeed.push(0) == tokenId, 'internal logical error. array IDs not consistent');
+        require(dataModificationDate.push(0) == tokenId, 'internal logical error. array IDs not consistent');
+        require(dataVintageGrade.push(0) == tokenId, 'internal logical error. array IDs not consistent');
+        require(dataTechGrade.push(0) == tokenId, 'internal logical error. array IDs not consistent');
+
+        if (predecessorID > 0) {
+            dataSuccessorID[predecessorID] = (uint32)(tokenId);
+        }
+
+        // addMotoModificationDetails(tokenId,predecessorID, certifierID, nameBaseModel,
+        // modificationPlainText, imageRessourcesIPFSAddress,
+        // horsepower, weight, topSpeed, modificationDate,
+        // vintageGrade, techGrade);
         //uint256 result = motos.push(moto);
 
         return tokenId;

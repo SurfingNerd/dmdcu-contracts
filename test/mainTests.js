@@ -1,7 +1,6 @@
 // import { getLastBlockTimestamp } from './utils.mjs'; // ES6 imports seem still not to be a thing in nodejs
 //const utils = require('./utils');
 
-
 const api = require('./dmdcuApi.js');
 const DMDCertifiedUnique = artifacts.require('DMDCertifiedUnique');
 const BN = web3.utils.BN;

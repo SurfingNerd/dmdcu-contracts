@@ -16,7 +16,7 @@ contract DMDCertifiedUnique is ERC721, Ownable {
         //main ethereum address used by the certifier.
         address mainAddress;
 
-        string website;
+        bytes32 website;
 
         string text;
 
@@ -67,7 +67,7 @@ contract DMDCertifiedUnique is ERC721, Ownable {
     //mapping(address => ModdedMoto) public moddedMotos;
 
 
-    function addCertifier(bytes32 name, bytes32 officialID, address mainAddress,string memory website, string memory text, bytes32 imageIPFSAddress)
+    function addCertifier(bytes32 name, bytes32 officialID, address mainAddress,bytes32 website, string memory text, bytes32 imageIPFSAddress)
     public
     onlyOwner
     returns (bool)

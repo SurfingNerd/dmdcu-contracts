@@ -26,15 +26,16 @@ contract('DMDCertifiedUnique', (accounts) => {
     //uniquesContract DMDCertifiedUnique
     uniquesContract = await DMDCertifiedUnique.new({from: blockservOrganisation});
     //uniquesContract = (await deployContract("DumbContract")) as DumbContract;
-
+    //console.log('contract address:' + uniquesContract.address);
+    //console.log(typeof DMDCertifiedUnique.abi);
   })
 
   it('blockservOrganisation adds certifier1', async()=> {
-    console.log(typeof DMDCertifiedUnique.abi);
-    console.log();
-    const result = await api.addNewCertifier(DMDCertifiedUnique.abi, uniquesContract.address, blockservOrganisation, 'certifier1', '001', 'Nomansland1', 'www.nomansland.example', 'a test certifier!', '');
-    console.log('certifier added:');
-    console.log(result);
+    //console.log(typeof DMDCertifiedUnique.abi);
+    //console.log();
+    const result = await api.addNewCertifier(web3, DMDCertifiedUnique.abi, uniquesContract.address, blockservOrganisation, 'certifier1', '001',certifier1, 'www.nomansland.example', 'a test certifier!', '');
+    //console.log('certifier added:');
+    //console.log(result);
   })
 
   it('certifier1 tries to add certifier2 but fails', async()=> {

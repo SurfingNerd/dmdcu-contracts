@@ -34,9 +34,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
@@ -45,8 +42,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 exports.__esModule = true;
-//import { contract } from "web3-eth-contract";
-var web3_1 = __importDefault(require("web3"));
 //import Contract from "web3/eth/contract";
 var fs = __importStar(require("fs"));
 var path = __importStar(require("path"));
@@ -55,16 +50,19 @@ var path = __importStar(require("path"));
 //     const contract = new DMDCertifiedUnique(getABI('DMDCertifiedUnique', abiBasePath), null, {from: account});
 //     return contract;
 // }
-function addNewCertifier(abiJSonInterface, knownContractAddress, account, certifierName, officialID, mainAddress, website, text, imageIPFSAddress) {
+function addNewCertifier(web3, abiJSonInterface, knownContractAddress, account, certifierName, officialID, mainAddress, website, text, imageIPFSAddress) {
     return __awaiter(this, void 0, void 0, function () {
-        var x, contractRaw, contract, result;
+        var certifierNameHex, officialIDHex, websiteHex, imageIPFSAddressHex, contractRaw, contract, result;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    x = new web3_1["default"]();
-                    contractRaw = new x.eth.Contract(abiJSonInterface, knownContractAddress, { from: account });
+                    certifierNameHex = web3.utils.fromUtf8(certifierName);
+                    officialIDHex = web3.utils.fromUtf8(officialID);
+                    websiteHex = web3.utils.fromUtf8(website);
+                    imageIPFSAddressHex = web3.utils.fromUtf8(imageIPFSAddress);
+                    contractRaw = new web3.eth.Contract(abiJSonInterface, knownContractAddress, { from: account });
                     contract = contractRaw;
-                    return [4 /*yield*/, contract.methods.addCertifier(certifierName, officialID, mainAddress, website, text, imageIPFSAddress).send()];
+                    return [4 /*yield*/, contract.methods.addCertifier(certifierNameHex, officialIDHex, mainAddress, websiteHex, text, imageIPFSAddressHex).send({ gas: '0x100000' })];
                 case 1:
                     result = _a.sent();
                     return [2 /*return*/, result];

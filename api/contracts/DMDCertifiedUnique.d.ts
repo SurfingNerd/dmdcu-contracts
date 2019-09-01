@@ -81,6 +81,8 @@ export class DMDCertifiedUnique extends Contract {
 
     addMotoModification(
       owner: string,
+      predecessorID: number | string,
+      certifierID: number | string,
       name: string | number[],
       nameBaseModel: string | number[],
       modificationPlainText: string,

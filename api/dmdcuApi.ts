@@ -1,5 +1,5 @@
 
-import { DMDCertifiedUnique } from './api/contracts/DMDCertifiedUnique';
+import { DMDCertifiedUnique } from './contracts/DMDCertifiedUnique';
 //import { contract } from "web3-eth-contract";
 import web3 from 'web3';
 
@@ -20,14 +20,20 @@ import * as path from 'path';
 //     return contract;
 // }
 
-export async function addNewCertifier(abiJSonInterface : any[], knownContractAddress: string, account: string, certifierName: string, officialID: string,mainAddress: string,website: string,text: string,imageIPFSAddress: string) {
-    
-    const x = new web3();
+export async function addNewCertifier(web3: web3, abiJSonInterface : any[], knownContractAddress: string, account: string, certifierName: string, officialID: string,mainAddress: string,website: string,text: string,imageIPFSAddress: string) {
     
     
-    const contractRaw = new x.eth.Contract(abiJSonInterface, knownContractAddress, {from: account});
+    const certifierNameHex = web3.utils.fromUtf8(certifierName);
+    const officialIDHex = web3.utils.fromUtf8(officialID);
+    const websiteHex = web3.utils.fromUtf8(website);
+    const imageIPFSAddressHex = web3.utils.fromUtf8(imageIPFSAddress);
+
+    // console.log('certifierName:');
+    // console.log(certifierNameHex);
+    
+    const contractRaw = new web3.eth.Contract(abiJSonInterface, knownContractAddress, {from: account});
     const contract = contractRaw as unknown as DMDCertifiedUnique;
-    const result = await contract.methods.addCertifier(certifierName, officialID,mainAddress, website, text, imageIPFSAddress).send();
+    const result = await contract.methods.addCertifier(certifierNameHex, officialIDHex,mainAddress, websiteHex, text, imageIPFSAddressHex).send({gas:'0x100000'});
     return result;
     //return 'hello!';
 }

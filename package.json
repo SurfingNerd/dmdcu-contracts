@@ -7,10 +7,10 @@
     "test": "test"
   },
   "scripts": {
-    "test": "tsc test/dmdcuApi.ts && truffle test",
+    "test": "tsc && truffle test",
     "build": "truffle compile",
     "typechain": "typechain --target web3-1.0.0 --outDir api/contracts './build/contracts/*.json'",
-    "compileTests": "tsc test/api/dmdcuApi.ts"
+    "tsc": "tsc"
   },
   "repository": {
     "type": "git",
@@ -29,6 +29,7 @@
   },
   "homepage": "https://github.com/SurfingNerd/dmdcu-contracts#readme",
   "dependencies": {
+    "@types/web3": "^1.0.19",
     "fs": "0.0.1-security",
     "openzeppelin-solidity": "^2.3.0",
     "truffle": "^5.0.30",

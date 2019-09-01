@@ -2,7 +2,7 @@
 //const utils = require('./utils');
 
 
-const api = require('./dmdcuApi.js/index.js');
+const api = require('./dmdcuApi.js');
 const DMDCertifiedUnique = artifacts.require('DMDCertifiedUnique');
 const BN = web3.utils.BN;
 
@@ -20,13 +20,19 @@ contract('DMDCertifiedUnique', (accounts) => {
 
   let uniquesContract;
   it('contract deployment', async()=> {
+
+
+    
     //uniquesContract DMDCertifiedUnique
     uniquesContract = await DMDCertifiedUnique.new({from: blockservOrganisation});
+    //uniquesContract = (await deployContract("DumbContract")) as DumbContract;
 
   })
 
   it('blockservOrganisation adds certifier1', async()=> {
-    const result = await api.addNewCertifier('../build/contracts', uniquesContract.address, blockservOrganisation, 'certifier1', '001', 'Nomansland1', 'www.nomansland.example', 'a test certifier!', '');
+    console.log(typeof DMDCertifiedUnique.abi);
+    console.log();
+    const result = await api.addNewCertifier(DMDCertifiedUnique.abi, uniquesContract.address, blockservOrganisation, 'certifier1', '001', 'Nomansland1', 'www.nomansland.example', 'a test certifier!', '');
     console.log('certifier added:');
     console.log(result);
   })

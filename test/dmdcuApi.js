@@ -34,26 +34,36 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 exports.__esModule = true;
-var DMDCertifiedUnique_1 = require("../api/contracts/DMDCertifiedUnique");
-var fs = require("fs");
-var path = require("path");
-function deployNewDMDCertifiedUniqueContract(web3, abiBasePath, account) {
+//import { contract } from "web3-eth-contract";
+var web3_1 = __importDefault(require("web3"));
+//import Contract from "web3/eth/contract";
+var fs = __importStar(require("fs"));
+var path = __importStar(require("path"));
+// async function deployNewDMDCertifiedUniqueContract(web3: web3, abiBasePath: string, account: string) {
+//     //Buffer abiFile = fs.readFileSync('DMDCertifiedUnique.json');
+//     const contract = new DMDCertifiedUnique(getABI('DMDCertifiedUnique', abiBasePath), null, {from: account});
+//     return contract;
+// }
+function addNewCertifier(abiJSonInterface, knownContractAddress, account, certifierName, officialID, mainAddress, website, text, imageIPFSAddress) {
     return __awaiter(this, void 0, void 0, function () {
-        var contract;
-        return __generator(this, function (_a) {
-            contract = new DMDCertifiedUnique_1.DMDCertifiedUnique(getABI('DMDCertifiedUnique', abiBasePath), null, { from: account });
-            return [2 /*return*/, contract];
-        });
-    });
-}
-function addNewCertifier(abiBasePath, knownContractAddress, account, certifierName, officialID, mainAddress, website, text, imageIPFSAddress) {
-    return __awaiter(this, void 0, void 0, function () {
-        var contract, result;
+        var x, contractRaw, contract, result;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    contract = new DMDCertifiedUnique_1.DMDCertifiedUnique(getABI('DMDCertifiedUnique', abiBasePath), knownContractAddress, { from: account });
+                    x = new web3_1["default"]();
+                    contractRaw = new x.eth.Contract(abiJSonInterface, knownContractAddress, { from: account });
+                    contract = contractRaw;
                     return [4 /*yield*/, contract.methods.addCertifier(certifierName, officialID, mainAddress, website, text, imageIPFSAddress).send()];
                 case 1:
                     result = _a.sent();
@@ -74,7 +84,9 @@ function getABI(contractName, abiBasePath) {
     var abi = jsonOutput.abi;
     return abi;
 }
-function createDMDCertifiedUniqueContractObject(contractName, abiBasePath, existingContractAddress) {
-    return new DMDCertifiedUnique_1.DMDCertifiedUnique(getABI(contractName, abiBasePath), existingContractAddress);
-}
+// function createDMDCertifiedUniqueContractObject(contractName: string, abiBasePath: string, existingContractAddress?: string )
+//  : DMDCertifiedUnique {
+//     return new DMDCertifiedUnique(getABI(contractName, abiBasePath), existingContractAddress);
+// }
 //const contract = new DMDCertifiedUnique.DMDCertifiedUnique()
+//# sourceMappingURL=dmdcuApi.js.map

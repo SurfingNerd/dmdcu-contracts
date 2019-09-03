@@ -22,11 +22,34 @@ export class DMDCertifiedUnique extends Contract {
 
     certifiersAddressIndex(arg0: string): TransactionObject<BN>;
 
+    uniques(
+      arg0: number | string
+    ): TransactionObject<{
+      name: string;
+      name2: string;
+      name3: string;
+      assetPlainText: string;
+      imageRessourcesIPFSAddress: string;
+      certifierID: BN;
+      assetType: BN;
+      changeDate: BN;
+      rawData: string;
+      0: string;
+      1: string;
+      2: string;
+      3: string;
+      4: string;
+      5: BN;
+      6: BN;
+      7: BN;
+      8: string;
+    }>;
+
     ownerOf(tokenId: number | string): TransactionObject<string>;
 
     balanceOf(owner: string): TransactionObject<BN>;
 
-    dataOwner(arg0: number | string): TransactionObject<string>;
+    assetTypes(arg0: number | string): TransactionObject<string>;
 
     certifiers(
       arg0: number | string
@@ -81,11 +104,18 @@ export class DMDCertifiedUnique extends Contract {
       imageIPFSAddress: string | number[]
     ): TransactionObject<BN>;
 
-    addMotoModification(
+    addAssetType(typeName: string | number[]): TransactionObject<BN>;
+
+    addNewAsset(
       owner: string,
-      predecessorID: number | string,
-      certifierAddress: string,
-      name: string | number[]
+      assetType: number | string,
+      name: string | number[],
+      name2: string | number[],
+      name3: string | number[],
+      assetPlainText: string,
+      imageRessourcesIPFSAddress: string | number[],
+      changeDate: number | string,
+      rawData: string | number[]
     ): TransactionObject<BN>;
 
     owner(): TransactionObject<string>;

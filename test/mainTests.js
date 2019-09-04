@@ -49,12 +49,29 @@ contract('DMDCertifiedUnique', (accounts) => {
     } catch (error) {
       return;
     }
+
     throw new Error('addNewCertifier should fail, but it did not.');
   })
 
-  it('certifier1 creates an certificate for endConsumer1', async()=> {
-
+  it('certifier1 tries to add a new certifacte type but fails', async() => {
+    try {
+      await apiWrapper.addNewAssetType(certifier1, 'motorcycle');
+    } catch (error) {
+      return;
+    }
+    throw new Error('addNewCertifier should fail, but it did not.');
   })
+
+
+  // it('blockcerv adds motorcycle certifacte ', async() => {
+    
+  //   await apiWrapper.addNewAssetType(certifier1, 'motorcycle');
+
+  // })
+
+  // it('certifier1 creates an motorcycle certificate for endConsumer1', async()=> {
+  //   console.log(apiWrapper.motorCycleValuesToHexString(100, 611, 213, 0, 1));
+  // })
 
   it('endConsumer1 accepts that certificate', async()=> {
 

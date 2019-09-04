@@ -62,6 +62,54 @@ var DmdcuApi = /** @class */ (function () {
             });
         });
     };
+    DmdcuApi.prototype.addNewAsset = function (web3account, addressOfOwner, assetType, name, name2, name3, assetPlainText, imageRessourcesIPFSAddress, certifierAddress, changeDate, rawDataHexString) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/];
+            });
+        });
+    };
+    // public async addNewMotorcycle(web3account: string, addressOfOwner: string, assetType: string, name: string, name2: string, name3: string,
+    //     assetPlainText: string, imageRessourcesIPFSAddress, certifierAddress: string,
+    //     changeDate: Date, horsepower: number, weight: number, topSpeed: number,
+    //     vintageGrade: number, techGrade: number
+    //     )
+    // {
+    //     //all values are meant to have 3 dots precision. example: 86.731 horse power = 86731
+    //     // uint32[] dataHorsepower;
+    //     // uint32[] dataWeight;
+    //     // uint32[] dataTopSpeed;
+    //     //     //0: no vintage
+    //     //     //1: has vintage elements
+    //     //     //2: pure vintage
+    //     // uint8[] dataVintageGrade;
+    //     //     //0: old base
+    //     //     //1: modern bike
+    //     //     //2: state of the art high end technology
+    //     // uint8[] dataTechGrade;
+    //     //let rawData =  Buffer.of();
+    // }
+    DmdcuApi.prototype.motorCycleValuesToHexString = function (horsepower, weight, topSpeed, vintageGrade, techGrade) {
+        var result = "0x" + this.numberTo32ByteHex(horsepower * 1000) + this.numberTo32ByteHex(weight * 1000) + this.numberTo32ByteHex(topSpeed * 1000) + this.numberTo8ByteHex(vintageGrade * 1000) + this.numberTo8ByteHex(techGrade * 1000);
+        console.log('motoHexString: ' + result);
+        return result;
+    };
+    DmdcuApi.prototype.numberTo32ByteHex = function (val) {
+        return this.numberToXByteHex(val, 32);
+    };
+    DmdcuApi.prototype.numberTo8ByteHex = function (val) {
+        return this.numberToXByteHex(val, 8);
+    };
+    DmdcuApi.prototype.numberToXByteHex = function (val, x) {
+        var cleanedNumber = Number.parseInt(val.toString());
+        var result = cleanedNumber.toString(16);
+        if (result.length > (x * 2))
+            throw Error("The provided number cant be stored in " + x + " bytes: " + val);
+        while (result.length < x) {
+            result = '0' + result;
+        }
+        return result;
+    };
     DmdcuApi.prototype.toBytes32String = function (val) {
         var result = this.web3.utils.fromUtf8(val);
         if (result.length > 32 * 2 + 1) {

@@ -18,6 +18,8 @@ contract('DMDCertifiedUnique', (accounts) => {
   const endConsumer3 = accounts[5];
 
   let uniquesContract;
+  let apiWrapper;
+
   it('contract deployment', async()=> {
 
 
@@ -27,19 +29,23 @@ contract('DMDCertifiedUnique', (accounts) => {
     //uniquesContract = (await deployContract("DumbContract")) as DumbContract;
     //console.log('contract address:' + uniquesContract.address);
     //console.log(typeof DMDCertifiedUnique.abi);
+    apiWrapper = new api.DmdcuApi(web3, DMDCertifiedUnique.abi, uniquesContract.address);
+    console.log('apiWRapperType: ' + typeof apiWrapper);
+
   })
 
+  
   it('blockservOrganisation adds certifier1', async()=> {
     //console.log(typeof DMDCertifiedUnique.abi);
     //console.log();
-    const result = await api.addNewCertifier(web3, DMDCertifiedUnique.abi, uniquesContract.address, blockservOrganisation, 'certifier1', '001',certifier1, 'www.nomansland.example', 'a test certifier!', '');
+    const result = await apiWrapper.addNewCertifier(blockservOrganisation, 'certifier1', '001',certifier1, 'www.nomansland.example', 'a test certifier!', '');
     //console.log('certifier added:');
     //console.log(result);
   })
 
   it('certifier1 tries to add certifier2 but fails', async()=> {
     try {
-      await api.addNewCertifier(web3, DMDCertifiedUnique.abi, uniquesContract.address, certifier1, 'certifier2', '002',certifier2, 'www.nomansland.example', 'a second test certifier!', '');
+      await apiWrapper.addNewCertifier(certifier1, 'certifier2', '002',certifier2, 'www.nomansland.example', 'a second test certifier!', '');
     } catch (error) {
       return;
     }

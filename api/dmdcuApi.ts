@@ -5,58 +5,36 @@ import web3 from 'web3';
 
 //import Contract from "web3/eth/contract";
 
-
 import * as fs from 'fs';
 import * as path from 'path';
 
+export class DmdcuApi {
 
+    public contract: DMDCertifiedUnique;
 
+    constructor (public web3: web3, public abiJSonInterface : any[], public knownContractAddress: string) {
+        const contractRaw = new this.web3.eth.Contract(this.abiJSonInterface, this.knownContractAddress);
+        this.contract = contractRaw as unknown as DMDCertifiedUnique;
+    }
 
+    public async addNewAssetType(web3account: string, assetTypeName: string) {
+        return this.contract.methods.addAssetType(this.toBytes32String(assetTypeName)).send({gas:'0x100000', from:web3account});
+    }
 
-// async function deployNewDMDCertifiedUniqueContract(web3: web3, abiBasePath: string, account: string) {
-//     //Buffer abiFile = fs.readFileSync('DMDCertifiedUnique.json');
-//     const contract = new DMDCertifiedUnique(getABI('DMDCertifiedUnique', abiBasePath), null, {from: account});
-    
-//     return contract;
-// }
+    public async addNewCertifier(web3account: string, certifierName: string, officialID: string,mainAddress: string,website: string,text: string,imageIPFSAddress: string) {
+        const certifierNameHex = this.toBytes32String(certifierName);
+        const officialIDHex = this.toBytes32String(officialID);
+        const websiteHex = this.toBytes32String(website);
+        const imageIPFSAddressHex = this.toBytes32String(imageIPFSAddress);
+        return this.contract.methods.addCertifier(certifierNameHex, officialIDHex, mainAddress, websiteHex, text, imageIPFSAddressHex).send({gas:'0x100000', from:web3account});
+    }
 
-export async function addNewCertifier(web3: web3, abiJSonInterface : any[], knownContractAddress: string, account: string, certifierName: string, officialID: string,mainAddress: string,website: string,text: string,imageIPFSAddress: string) {
-    
-    
-    const certifierNameHex = web3.utils.fromUtf8(certifierName);
-    const officialIDHex = web3.utils.fromUtf8(officialID);
-    const websiteHex = web3.utils.fromUtf8(website);
-    const imageIPFSAddressHex = web3.utils.fromUtf8(imageIPFSAddress);
+    private toBytes32String(val: string) : string {
 
-    // console.log('certifierName:');
-    // console.log(certifierNameHex);
-    
-    const contractRaw = new web3.eth.Contract(abiJSonInterface, knownContractAddress, {from: account});
-    const contract = contractRaw as unknown as DMDCertifiedUnique;
-    const result = await contract.methods.addCertifier(certifierNameHex, officialIDHex,mainAddress, websiteHex, text, imageIPFSAddressHex).send({gas:'0x100000'});
-    return result;
-    //return 'hello!';
+        const result = this.web3.utils.fromUtf8(val);
+        if (result.length > 32*2 + 1) {
+            throw new Error(`This string is to long: ${val}`);
+        }
+        return result;
+    }
 }
-
-function getABI(contractName: string, abiBasePath: string) {
-    // It will read the ABI & byte code contents from the JSON file in ./build/contracts/ folder
-    const jsonOutputName = `${path.parse(contractName).name}.json`;
-    const jsonFile = `${abiBasePath}/${jsonOutputName}`;
-    
-    // Read the JSON file contents
-    const contractJsonContent = fs.readFileSync(jsonFile, 'utf8');
-    const jsonOutput = JSON.parse(contractJsonContent);
-    
-    // Retrieve the ABI
-    const { abi } = jsonOutput;
-    return abi;
-}
-
-// function createDMDCertifiedUniqueContractObject(contractName: string, abiBasePath: string, existingContractAddress?: string )
-//  : DMDCertifiedUnique {
-//     return new DMDCertifiedUnique(getABI(contractName, abiBasePath), existingContractAddress);
-// }
-
-
-
-//const contract = new DMDCertifiedUnique.DMDCertifiedUnique()

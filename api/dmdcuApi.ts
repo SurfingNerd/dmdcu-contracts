@@ -30,11 +30,37 @@ export class DmdcuApi {
     }
 
     public async addNewAsset(web3account: string, addressOfOwner: string, assetType: string, name: string, name2: string, name3: string,
-        assetPlainText: string, imageRessourcesIPFSAddress, certifierAddress: string,
-        changeDate: Date, rawDataHexString: string) {
-        
-             
-        //this.contract.methods.addNewAsset(addressOfOwner, assetType, name) 
+        assetPlainText: string, imageRessourcesIPFSAddress,
+        changeDate: number, rawDataHexString: string) {
+
+        //const assetTypeID = await this.getIndexOfAssetType(assetType);
+        const allAssetTypes = await this.getAllAssetTypes();
+        const assetTypeID = allAssetTypes.indexOf(assetType);
+
+        if (assetTypeID < 0) {
+            throw Error(`AssetType ${assetType} is not known to this contract. add it first with addNewAssetType.`);
+        }
+
+        return this.contract.methods.addNewAsset(addressOfOwner, assetTypeID, this.toBytes32String(name), this.toBytes32String(name2), this.toBytes32String(name3), assetPlainText, this.toBytes32String(imageRessourcesIPFSAddress), this.dateToUInt64Hex(changeDate), rawDataHexString).send({gas:'0x100000', from:web3account});
+    }
+
+    public async getAllAssetTypes() : Promise<String[]> {
+
+        const assetTypesResult = await (await this.contract.methods.getAllAssetTypes.call({}).call({}) );
+        const result = [];
+
+        //console.log(assetTypesResult);
+        for (let i = 0; i < assetTypesResult.length; i++) {
+            result.push(web3.utils.toUtf8(assetTypesResult[i]));
+        }
+
+        return result;
+    }
+
+    public async getIndexOfAssetType(assetType : string) : Promise<number> {
+
+        const assetTypeEncoded =  this.toBytes32String(assetType);
+        return await (await this.contract.methods.getIndexOfAssetType.call({}, assetTypeEncoded )).call({}, assetTypeEncoded);
     }
 
     // public async addNewMotorcycle(web3account: string, addressOfOwner: string, assetType: string, name: string, name2: string, name3: string,
@@ -65,9 +91,18 @@ export class DmdcuApi {
         vintageGrade: number, techGrade: number) : string {
         
         let result = `0x${this.numberTo32ByteHex(horsepower * 1000)}${this.numberTo32ByteHex(weight * 1000)}${this.numberTo32ByteHex(topSpeed * 1000)}${this.numberTo8ByteHex(vintageGrade * 1000)}${this.numberTo8ByteHex(techGrade * 1000)}`;
-        console.log('motoHexString: ' + result);
+        //console.log('motoHexString: ' + result);
         return result;
     }
+
+    private dateToUInt64Hex(val: number) : string {
+        return this.numberTo64ByteHex(val / 1000);
+    }
+
+    private numberTo64ByteHex(val: number) {
+        return this.numberToXByteHex(val, 64);
+    }
+
 
     private numberTo32ByteHex(val: number) {
         return this.numberToXByteHex(val, 32);

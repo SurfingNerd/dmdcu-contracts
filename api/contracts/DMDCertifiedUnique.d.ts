@@ -75,6 +75,8 @@ export class DMDCertifiedUnique extends Contract {
       operator: string
     ): TransactionObject<boolean>;
 
+    getIndexOfAssetType(assetName: string | number[]): TransactionObject<BN>;
+
     approve(to: string, tokenId: number | string): TransactionObject<void>;
 
     transferFrom(
@@ -120,6 +122,8 @@ export class DMDCertifiedUnique extends Contract {
 
     owner(): TransactionObject<string>;
     isOwner(): TransactionObject<boolean>;
+    isCertifier(): TransactionObject<boolean>;
+    getAllAssetTypes(): TransactionObject<(string)[]>;
   };
   events: {
     OwnershipTransferred: ContractEvent<{

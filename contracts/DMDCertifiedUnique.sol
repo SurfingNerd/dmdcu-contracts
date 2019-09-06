@@ -62,6 +62,7 @@ contract DMDCertifiedUnique is ERC721, Ownable {
     //     //2: state of the art high end technology
     // uint8[] dataTechGrade;
 
+
     Certifier[] public certifiers;
     bytes32[] public assetTypes;
     UniqueAsset[] public uniques;
@@ -69,6 +70,21 @@ contract DMDCertifiedUnique is ERC721, Ownable {
 
     mapping(address => uint256) public certifiersAddressIndex;
     //mapping(address => ModdedMoto) public moddedMotos;
+
+        /**
+     * @dev Throws if called by any account other than the owner.
+     */
+    modifier onlyCertifier() {
+        require(isCertifier(), "Ownable: caller is not the owner");
+        _;
+    }
+
+
+    function isCertifier() public view returns (bool) {
+        return false;
+        //return certifiersAddressIndex[msg.sender] != 0;
+    }
+
 
 
     function addCertifier(bytes32 name, bytes32 officialID, address mainAddress,bytes32 website, string memory text, bytes32 imageIPFSAddress)
@@ -95,6 +111,7 @@ contract DMDCertifiedUnique is ERC721, Ownable {
         string memory assetPlainText, bytes32 imageRessourcesIPFSAddress,
         uint64 changeDate, bytes memory rawData)
     public
+    onlyCertifier
     returns (uint256) {
 
         //todo: tokenURI.
@@ -115,6 +132,26 @@ contract DMDCertifiedUnique is ERC721, Ownable {
 
         return uniques.length;
         //return 0;
+    }
+
+    function getAllAssetTypes()
+    public
+    view
+    returns (bytes32[] memory) {
+        return assetTypes;
+    }
+
+    function getIndexOfAssetType(bytes32 assetName)
+    public
+    view
+    returns (int256) {
+
+        for (uint i = 0; i<assetTypes.length; i++) {
+            if (assetTypes[i] == assetName) {
+                return (int256)(i);
+            }
+        }
+        return -1;
     }
 
 }

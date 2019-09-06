@@ -34,7 +34,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 exports.__esModule = true;
+//import { contract } from "web3-eth-contract";
+var web3_1 = __importDefault(require("web3"));
 var DmdcuApi = /** @class */ (function () {
     function DmdcuApi(web3, abiJSonInterface, knownContractAddress) {
         this.web3 = web3;
@@ -62,10 +67,53 @@ var DmdcuApi = /** @class */ (function () {
             });
         });
     };
-    DmdcuApi.prototype.addNewAsset = function (web3account, addressOfOwner, assetType, name, name2, name3, assetPlainText, imageRessourcesIPFSAddress, certifierAddress, changeDate, rawDataHexString) {
+    DmdcuApi.prototype.addNewAsset = function (web3account, addressOfOwner, assetType, name, name2, name3, assetPlainText, imageRessourcesIPFSAddress, changeDate, rawDataHexString) {
         return __awaiter(this, void 0, void 0, function () {
+            var allAssetTypes, assetTypeID;
             return __generator(this, function (_a) {
-                return [2 /*return*/];
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.getAllAssetTypes()];
+                    case 1:
+                        allAssetTypes = _a.sent();
+                        assetTypeID = allAssetTypes.indexOf(assetType);
+                        if (assetTypeID < 0) {
+                            throw Error("AssetType " + assetType + " is not known to this contract. add it first with addNewAssetType.");
+                        }
+                        return [2 /*return*/, this.contract.methods.addNewAsset(addressOfOwner, assetTypeID, this.toBytes32String(name), this.toBytes32String(name2), this.toBytes32String(name3), assetPlainText, this.toBytes32String(imageRessourcesIPFSAddress), this.dateToUInt64Hex(changeDate), rawDataHexString).send({ gas: '0x100000', from: web3account })];
+                }
+            });
+        });
+    };
+    DmdcuApi.prototype.getAllAssetTypes = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var assetTypesResult, result, i;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.contract.methods.getAllAssetTypes.call({}).call({})];
+                    case 1: return [4 /*yield*/, (_a.sent())];
+                    case 2:
+                        assetTypesResult = _a.sent();
+                        result = [];
+                        //console.log(assetTypesResult);
+                        for (i = 0; i < assetTypesResult.length; i++) {
+                            result.push(web3_1["default"].utils.toUtf8(assetTypesResult[i]));
+                        }
+                        return [2 /*return*/, result];
+                }
+            });
+        });
+    };
+    DmdcuApi.prototype.getIndexOfAssetType = function (assetType) {
+        return __awaiter(this, void 0, void 0, function () {
+            var assetTypeEncoded;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        assetTypeEncoded = this.toBytes32String(assetType);
+                        return [4 /*yield*/, this.contract.methods.getIndexOfAssetType.call({}, assetTypeEncoded)];
+                    case 1: return [4 /*yield*/, (_a.sent()).call({}, assetTypeEncoded)];
+                    case 2: return [2 /*return*/, _a.sent()];
+                }
             });
         });
     };
@@ -91,8 +139,14 @@ var DmdcuApi = /** @class */ (function () {
     // }
     DmdcuApi.prototype.motorCycleValuesToHexString = function (horsepower, weight, topSpeed, vintageGrade, techGrade) {
         var result = "0x" + this.numberTo32ByteHex(horsepower * 1000) + this.numberTo32ByteHex(weight * 1000) + this.numberTo32ByteHex(topSpeed * 1000) + this.numberTo8ByteHex(vintageGrade * 1000) + this.numberTo8ByteHex(techGrade * 1000);
-        console.log('motoHexString: ' + result);
+        //console.log('motoHexString: ' + result);
         return result;
+    };
+    DmdcuApi.prototype.dateToUInt64Hex = function (val) {
+        return this.numberTo64ByteHex(val / 1000);
+    };
+    DmdcuApi.prototype.numberTo64ByteHex = function (val) {
+        return this.numberToXByteHex(val, 64);
     };
     DmdcuApi.prototype.numberTo32ByteHex = function (val) {
         return this.numberToXByteHex(val, 32);

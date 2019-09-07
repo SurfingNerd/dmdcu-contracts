@@ -75,14 +75,14 @@ contract DMDCertifiedUnique is ERC721, Ownable {
      * @dev Throws if called by any account other than the owner.
      */
     modifier onlyCertifier() {
-        require(isCertifier(), "Ownable: caller is not the owner");
+        require(isCertifier(), "only certifiers are allowed for this action.");
         _;
     }
 
 
     function isCertifier() public view returns (bool) {
-        return false;
-        //return certifiersAddressIndex[msg.sender] != 0;
+        //return false;
+        return certifiersAddressIndex[msg.sender] != 0;
     }
 
 

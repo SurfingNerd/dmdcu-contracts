@@ -29,9 +29,21 @@ export class DmdcuApi {
         return this.contract.methods.addCertifier(certifierNameHex, officialIDHex, mainAddress, websiteHex, text, imageIPFSAddressHex).send({gas:'0x100000', from:web3account});
     }
 
+    public async addNewMotorcycle(web3account: string, addressOfOwner: string, assetType: string, name: string, name2: string, name3: string,
+        assetPlainText: string, imageRessourcesIPFSAddress,
+        changeDate: number, horsepower: number, weight: number, topSpeed: number,
+        vintageGrade: number, techGrade: number) {
+
+            const motorcylceValues = this.motorCycleValuesToNumberArray(horsepower, weight, topSpeed, vintageGrade, techGrade);
+            return this.addNewAsset(web3account, addressOfOwner, assetType, name, name2, name3, assetPlainText, imageRessourcesIPFSAddress, 
+            changeDate, motorcylceValues);
+    }
+
     public async addNewAsset(web3account: string, addressOfOwner: string, assetType: string, name: string, name2: string, name3: string,
         assetPlainText: string, imageRessourcesIPFSAddress,
         changeDate: number, rawData: number[]) {
+
+            
 
         //console.log('rawDataHexString: ' + rawDataHexString);
         //const assetTypeID = await this.getIndexOfAssetType(assetType);
@@ -42,17 +54,7 @@ export class DmdcuApi {
             throw Error(`AssetType ${assetType} is not known to this contract. add it first with addNewAssetType.`);
         }
 
-        
-
-        //const rawDataHexBytes = this.web3.utils.hexToBytes(rawDataHexString);
-
-        //const rawDataHexBytes = this.web3.utils.hexToBytes('000000000000000000000000000186a0000000000000000000000000000952b80000000000000000000000000003400800000000000003e8');
-
-        //const rawDataHexBytes = this.hexStringToNumberArray(rawDataHexString);
-
-        //console.log(rawDataHexBytes);
-
-        return this.contract.methods.addNewAsset(addressOfOwner, assetTypeID, this.toBytes32String(name), this.toBytes32String(name2), this.toBytes32String(name3), assetPlainText, this.toBytes32String(imageRessourcesIPFSAddress), this.dateToUInt64Hex(changeDate), rawData).send({gas:'0x100000', from:web3account});
+        return this.contract.methods.addNewAsset(addressOfOwner, assetTypeID, this.toBytes32String(name), this.toBytes32String(name2), this.toBytes32String(name3), assetPlainText, this.toBytes32String(imageRessourcesIPFSAddress), '0x' + this.dateToUInt64Hex(changeDate), rawData).send({gas:'0x100000', from:web3account});
     }
 
     public async getAllAssetTypes() : Promise<String[]> {
@@ -74,34 +76,26 @@ export class DmdcuApi {
         return await (await this.contract.methods.getIndexOfAssetType.call({}, assetTypeEncoded )).call({}, assetTypeEncoded);
     }
 
-    // public async addNewMotorcycle(web3account: string, addressOfOwner: string, assetType: string, name: string, name2: string, name3: string,
-    //     assetPlainText: string, imageRessourcesIPFSAddress, certifierAddress: string,
-    //     changeDate: Date, horsepower: number, weight: number, topSpeed: number,
-    //     vintageGrade: number, techGrade: number
-    //     )
-    // {
-    //     //all values are meant to have 3 dots precision. example: 86.731 horse power = 86731
-    //     // uint32[] dataHorsepower;
-    //     // uint32[] dataWeight;
-    //     // uint32[] dataTopSpeed;
-
-    //     //     //0: no vintage
-    //     //     //1: has vintage elements
-    //     //     //2: pure vintage
-    //     // uint8[] dataVintageGrade;
-
-    //     //     //0: old base
-    //     //     //1: modern bike
-    //     //     //2: state of the art high end technology
-    //     // uint8[] dataTechGrade;
-
-    //     //let rawData =  Buffer.of();
-    // }
-
     public motorCycleValuesToHexString(horsepower: number, weight: number, topSpeed: number,
         vintageGrade: number, techGrade: number) : string {
+
+        //all values are meant to have 3 dots precision. example: 86.731 horse power = 86731
+        // uint32[] dataHorsepower;
+        // uint32[] dataWeight;
+        // uint32[] dataTopSpeed;
+        //
+        //     //0: no vintage
+        //     //1: has vintage elements
+        //     //2: pure vintage
+        // uint8[] dataVintageGrade;
+        //
+        //     //0: old base
+        //     //1: modern bike
+        //     //2: state of the art high end technology
+        // uint8[] dataTechGrade;
+
         
-        let result = `0x${this.numberTo32ByteHex(horsepower * 1000)}${this.numberTo32ByteHex(weight * 1000)}${this.numberTo32ByteHex(topSpeed * 1000)}${this.numberTo8ByteHex(vintageGrade * 1000)}${this.numberTo8ByteHex(techGrade * 1000)}`;
+        let result = `0x${this.numberToUInt32Hex(horsepower * 1000)}${this.numberToUInt32Hex(weight * 1000)}${this.numberToUInt32Hex(topSpeed * 1000)}${this.numberToUInt8Hex(vintageGrade)}${this.numberTo8ByteHex(techGrade)}`;
         //console.log('motoHexString: ' + result);
         return result;
     }
@@ -113,24 +107,38 @@ export class DmdcuApi {
     }
 
     private dateToUInt64Hex(val: number) : string {
-        return this.numberTo64ByteHex(val / 1000);
+        return this.numberToUInt64Hex(val / 1000);
     }
 
-    private numberTo64ByteHex(val: number) {
-        return this.numberToXByteHex(val, 64);
+    // private numberTo64ByteHex(val: number) {
+    //     return this.numberToXByteHex(val, 64);
+    // }
+
+
+    private numberToUInt8Hex(val: number) {
+        return this.numberToXByteHex(val, 1);
     }
 
-
-    private numberTo32ByteHex(val: number) {
-        return this.numberToXByteHex(val, 32);
+    private numberToUInt16Hex(val: number) {
+        return this.numberToXByteHex(val, 2);
     }
 
-    
+    private numberToUInt32Hex(val: number) {
+        return this.numberToXByteHex(val, 4);
+    }
+
+    private numberToUInt64Hex(val: number) {
+        
+        return this.numberToXByteHex(val, 4);
+    }
+
     private numberTo8ByteHex(val: number) {
         return this.numberToXByteHex(val, 8);
     }
 
     private numberToXByteHex(val: number, x: number) {
+
+        if (val < 0) throw new Error('val need to be positiv');
         const cleanedNumber = Number.parseInt(val.toString());
         let result = cleanedNumber.toString(16);
         if (result.length > (x*2)) throw Error(`The provided number cant be stored in ${x} bytes: ${val}`);
@@ -142,18 +150,13 @@ export class DmdcuApi {
 
     private hexStringToNumberArray(hexString: string) : number[] {
 
-        console.log('hexStr:' + hexString);
         let hexStr: string = hexString;
-        console.log('hexStr:' + hexStr);
-
         
         if (hexStr.startsWith('0x')) {
           hexStr = hexStr.substring(2, hexStr.length);
         }
-        //return Buffer.from(hexStr, 'hex');
         
         let result = new Array<number>(hexStr.length / 2);
-
         var i;
         for (i = 0; i < result.length; i++) {
             result[i] = Number.parseInt(hexStr.substring(i*2, i*2+1), 16);

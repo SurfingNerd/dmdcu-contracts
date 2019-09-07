@@ -31,8 +31,9 @@ export class DmdcuApi {
 
     public async addNewAsset(web3account: string, addressOfOwner: string, assetType: string, name: string, name2: string, name3: string,
         assetPlainText: string, imageRessourcesIPFSAddress,
-        changeDate: number, rawDataHexString: string) {
+        changeDate: number, rawData: number[]) {
 
+        //console.log('rawDataHexString: ' + rawDataHexString);
         //const assetTypeID = await this.getIndexOfAssetType(assetType);
         const allAssetTypes = await this.getAllAssetTypes();
         const assetTypeID = allAssetTypes.indexOf(assetType);
@@ -41,7 +42,17 @@ export class DmdcuApi {
             throw Error(`AssetType ${assetType} is not known to this contract. add it first with addNewAssetType.`);
         }
 
-        return this.contract.methods.addNewAsset(addressOfOwner, assetTypeID, this.toBytes32String(name), this.toBytes32String(name2), this.toBytes32String(name3), assetPlainText, this.toBytes32String(imageRessourcesIPFSAddress), this.dateToUInt64Hex(changeDate), rawDataHexString).send({gas:'0x100000', from:web3account});
+        
+
+        //const rawDataHexBytes = this.web3.utils.hexToBytes(rawDataHexString);
+
+        //const rawDataHexBytes = this.web3.utils.hexToBytes('000000000000000000000000000186a0000000000000000000000000000952b80000000000000000000000000003400800000000000003e8');
+
+        //const rawDataHexBytes = this.hexStringToNumberArray(rawDataHexString);
+
+        //console.log(rawDataHexBytes);
+
+        return this.contract.methods.addNewAsset(addressOfOwner, assetTypeID, this.toBytes32String(name), this.toBytes32String(name2), this.toBytes32String(name3), assetPlainText, this.toBytes32String(imageRessourcesIPFSAddress), this.dateToUInt64Hex(changeDate), rawData).send({gas:'0x100000', from:web3account});
     }
 
     public async getAllAssetTypes() : Promise<String[]> {
@@ -95,6 +106,12 @@ export class DmdcuApi {
         return result;
     }
 
+    public motorCycleValuesToNumberArray(horsepower: number, weight: number, topSpeed: number,
+        vintageGrade: number, techGrade: number) : number[] {
+        
+        return this.hexStringToNumberArray(this.motorCycleValuesToHexString(horsepower, weight, topSpeed, vintageGrade, techGrade));
+    }
+
     private dateToUInt64Hex(val: number) : string {
         return this.numberTo64ByteHex(val / 1000);
     }
@@ -121,6 +138,35 @@ export class DmdcuApi {
             result = '0' + result;
         }
         return result;
+    }
+
+    private hexStringToNumberArray(hexString: string) : number[] {
+
+        console.log('hexStr:' + hexString);
+        let hexStr: string = hexString;
+        console.log('hexStr:' + hexStr);
+
+        
+        if (hexStr.startsWith('0x')) {
+          hexStr = hexStr.substring(2, hexStr.length);
+        }
+        //return Buffer.from(hexStr, 'hex');
+        
+        let result = new Array<number>(hexStr.length / 2);
+
+        var i;
+        for (i = 0; i < result.length; i++) {
+            result[i] = Number.parseInt(hexStr.substring(i*2, i*2+1), 16);
+        } 
+        return result;
+    }
+
+    private hexStringToBuffer(hexString: string) : Buffer {
+        let hexStr = hexString;
+        if (hexStr.startsWith('0x')) {
+          hexStr = hexStr.substring(2, hexStr.length);
+        }
+        return Buffer.from(hexStr, 'hex');
     }
 
     private toBytes32String(val: string) : string {

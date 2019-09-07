@@ -72,9 +72,9 @@ contract('DMDCertifiedUnique', (accounts) => {
   })
 
   async function addNewAsset(certifier, targetAddress, assetType) {
-    const motorcycleValues = api.motorCycleValuesToHexString(100, 611, 213, 0, 1);
+    const motorcycleValues = api.motorCycleValuesToNumberArray(100, 611, 213, 0, 1);
 
-
+    console.log('motorcycleValues:' + motorcycleValues);
     //public async addNewAsset(web3account: string, addressOfOwner: string, assetType: string, name: string, name2: string, name3: string,
     //  assetPlainText: string, imageRessourcesIPFSAddress,
     //  changeDate: Date, rawDataHexString: string) {

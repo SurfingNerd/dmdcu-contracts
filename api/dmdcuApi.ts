@@ -31,17 +31,17 @@ export class DmdcuApi {
 
     public async addNewMotorcycle(web3account: string, addressOfOwner: string, assetType: string, name: string, name2: string, name3: string,
         assetPlainText: string, imageRessourcesIPFSAddress,
-        changeDate: number, horsepower: number, weight: number, topSpeed: number,
+        changeDateInLinuxTime: number, horsepower: number, weight: number, topSpeed: number,
         vintageGrade: number, techGrade: number) {
 
             const motorcylceValues = this.motorCycleValuesToNumberArray(horsepower, weight, topSpeed, vintageGrade, techGrade);
             return this.addNewAsset(web3account, addressOfOwner, assetType, name, name2, name3, assetPlainText, imageRessourcesIPFSAddress, 
-            changeDate, motorcylceValues);
+                changeDateInLinuxTime, motorcylceValues);
     }
 
     public async addNewAsset(web3account: string, addressOfOwner: string, assetType: string, name: string, name2: string, name3: string,
         assetPlainText: string, imageRessourcesIPFSAddress,
-        changeDate: number, rawData: number[]) {
+        changeDateInLinuxTime: number, rawData: number[]) {
 
             
 
@@ -54,7 +54,7 @@ export class DmdcuApi {
             throw Error(`AssetType ${assetType} is not known to this contract. add it first with addNewAssetType.`);
         }
 
-        return this.contract.methods.addNewAsset(addressOfOwner, assetTypeID, this.toBytes32String(name), this.toBytes32String(name2), this.toBytes32String(name3), assetPlainText, this.toBytes32String(imageRessourcesIPFSAddress), '0x' + this.dateToUInt64Hex(changeDate), rawData).send({gas:'0x100000', from:web3account});
+        return this.contract.methods.addNewAsset(addressOfOwner, assetTypeID, this.toBytes32String(name), this.toBytes32String(name2), this.toBytes32String(name3), assetPlainText, this.toBytes32String(imageRessourcesIPFSAddress), '0x' + this.numberToUInt64Hex(changeDateInLinuxTime), rawData).send({gas:'0x100000', from:web3account});
     }
 
     public async getAllAssetTypes() : Promise<String[]> {
@@ -105,15 +105,6 @@ export class DmdcuApi {
         
         return this.hexStringToNumberArray(this.motorCycleValuesToHexString(horsepower, weight, topSpeed, vintageGrade, techGrade));
     }
-
-    private dateToUInt64Hex(val: number) : string {
-        return this.numberToUInt64Hex(val / 1000);
-    }
-
-    // private numberTo64ByteHex(val: number) {
-    //     return this.numberToXByteHex(val, 64);
-    // }
-
 
     private numberToUInt8Hex(val: number) {
         return this.numberToXByteHex(val, 1);

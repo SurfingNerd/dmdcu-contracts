@@ -88,12 +88,7 @@ contract('DMDCertifiedUnique', (accounts) => {
     
     const result = await api.addNewMotorcycle(certifier, targetAddress, 'motorcycle', 'myName1', 'myName2', 'myName3',
       'this is worlds first blockchain certified motorcycle', '',
-      Date.now(), 100, 611, 213, 0, 1);
-    
-    //console.log('addNewMotoResult: ', result);
-    //console.log('motorcycleValues:' + motorcycleValues);
-    //return await api.addNewAsset(certifier, targetAddress, assetType, 'myName1', 'myName2', 'myName3',
-    //'plaintext', '', '', Date.now(), motorcycleValues);
+      Date.now()/1000, 100, 611, 213, 0, 1);
   }
 
 
@@ -113,13 +108,13 @@ contract('DMDCertifiedUnique', (accounts) => {
   })
 
 
-  it('endConsumer1 accepts that certificate', async()=> {
+  // it('endConsumer1 accepts that certificate', async()=> {
 
-  })
+  // })
 
-  it('blockservOrganisation adds certifier2', async()=> {
+  // it('blockservOrganisation adds certifier2', async()=> {
 
-  })
+  // })
 
   //V2 requirements
   // as a certifier

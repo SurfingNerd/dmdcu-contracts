@@ -1,5 +1,8 @@
 
 import { DMDCertifiedUnique } from './contracts/DMDCertifiedUnique';
+import { TransactionObject } from  './contracts/types'
+import BN from "bn.js";
+
 //import { contract } from "web3-eth-contract";
 import web3 from 'web3';
 
@@ -43,7 +46,7 @@ export class DmdcuApi {
         assetPlainText: string, imageRessourcesIPFSAddress,
         changeDateInLinuxTime: number, rawData: number[]) {
 
-            
+        
 
         //console.log('rawDataHexString: ' + rawDataHexString);
         //const assetTypeID = await this.getIndexOfAssetType(assetType);
@@ -54,7 +57,37 @@ export class DmdcuApi {
             throw Error(`AssetType ${assetType} is not known to this contract. add it first with addNewAssetType.`);
         }
 
-        return this.contract.methods.addNewAsset(addressOfOwner, assetTypeID, this.toBytes32String(name), this.toBytes32String(name2), this.toBytes32String(name3), assetPlainText, this.toBytes32String(imageRessourcesIPFSAddress), '0x' + this.numberToUInt64Hex(changeDateInLinuxTime), rawData).send({gas:'0x100000', from:web3account});
+        const result = await this.contract.methods.addNewAsset(addressOfOwner, assetTypeID, this.toBytes32String(name), this.toBytes32String(name2), this.toBytes32String(name3), assetPlainText, this.toBytes32String(imageRessourcesIPFSAddress), '0x' + this.numberToUInt64Hex(changeDateInLinuxTime), rawData).send({gas:'0x100000', from:web3account});
+        
+        console.log('sendResult txHash:' + result);
+        const txReceipt = await this.web3.eth.getTransactionReceipt(result.transactionHash);
+        
+
+        console.log('sendResult receipt:' ,txReceipt);
+        //const getEventsResult = await this.contract.events.UniqueAssetProposed.call({fromBlock: txReceipt.blockNumber, toBlock: txReceipt.blockNumber});
+
+        // console.log('getEventsResult:', getEventsResult);
+
+        // // getEventsResult.callback(x => {
+        // //     console.log('got a callback:', x);
+        // // });
+
+        // const callbackResult = getEventsResult.callback();
+        // console.log('callbackResult: ', callbackResult);
+
+        const pastLogs = await this.web3.eth.getPastLogs({fromBlock: txReceipt.blockNumber, toBlock: txReceipt.blockNumber});
+        console.log('getPastLogs:', pastLogs);
+
+        // this.contract.events.UniqueAssetProposed({fromBlock: txReceipt.blockNumber, toBlock: txReceipt.blockNumber}, (error: Error, result: any) => {
+        //     if (result) {
+        //          console.log('callback: ', result);
+        //     }
+        //     if (error) {
+        //         console.log('error: ', error);
+        //     }
+        // });
+
+
     }
 
     public async getAllAssetTypes() : Promise<String[]> {

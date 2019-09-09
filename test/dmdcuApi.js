@@ -78,7 +78,7 @@ var DmdcuApi = /** @class */ (function () {
     };
     DmdcuApi.prototype.addNewAsset = function (web3account, addressOfOwner, assetType, name, name2, name3, assetPlainText, imageRessourcesIPFSAddress, changeDateInLinuxTime, rawData) {
         return __awaiter(this, void 0, void 0, function () {
-            var allAssetTypes, assetTypeID;
+            var allAssetTypes, assetTypeID, result, txReceipt, pastLogs;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.getAllAssetTypes()];
@@ -88,7 +88,19 @@ var DmdcuApi = /** @class */ (function () {
                         if (assetTypeID < 0) {
                             throw Error("AssetType " + assetType + " is not known to this contract. add it first with addNewAssetType.");
                         }
-                        return [2 /*return*/, this.contract.methods.addNewAsset(addressOfOwner, assetTypeID, this.toBytes32String(name), this.toBytes32String(name2), this.toBytes32String(name3), assetPlainText, this.toBytes32String(imageRessourcesIPFSAddress), '0x' + this.numberToUInt64Hex(changeDateInLinuxTime), rawData).send({ gas: '0x100000', from: web3account })];
+                        return [4 /*yield*/, this.contract.methods.addNewAsset(addressOfOwner, assetTypeID, this.toBytes32String(name), this.toBytes32String(name2), this.toBytes32String(name3), assetPlainText, this.toBytes32String(imageRessourcesIPFSAddress), '0x' + this.numberToUInt64Hex(changeDateInLinuxTime), rawData).send({ gas: '0x100000', from: web3account })];
+                    case 2:
+                        result = _a.sent();
+                        console.log('sendResult txHash:' + result);
+                        return [4 /*yield*/, this.web3.eth.getTransactionReceipt(result.transactionHash)];
+                    case 3:
+                        txReceipt = _a.sent();
+                        console.log('sendResult receipt:', txReceipt);
+                        return [4 /*yield*/, this.web3.eth.getPastLogs({ fromBlock: txReceipt.blockNumber, toBlock: txReceipt.blockNumber })];
+                    case 4:
+                        pastLogs = _a.sent();
+                        console.log('getPastLogs:', pastLogs);
+                        return [2 /*return*/];
                 }
             });
         });

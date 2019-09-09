@@ -25,6 +25,8 @@ export class DMDCertifiedUnique extends Contract {
     uniques(
       arg0: number | string
     ): TransactionObject<{
+      id: BN;
+      owner: string;
       name: string;
       name2: string;
       name3: string;
@@ -34,15 +36,17 @@ export class DMDCertifiedUnique extends Contract {
       assetType: BN;
       changeDate: BN;
       rawData: string;
-      0: string;
+      0: BN;
       1: string;
       2: string;
       3: string;
       4: string;
-      5: BN;
-      6: BN;
+      5: string;
+      6: string;
       7: BN;
-      8: string;
+      8: BN;
+      9: BN;
+      10: string;
     }>;
 
     ownerOf(tokenId: number | string): TransactionObject<string>;
@@ -70,10 +74,48 @@ export class DMDCertifiedUnique extends Contract {
       6: BN;
     }>;
 
+    proposedUniques(
+      arg0: number | string
+    ): TransactionObject<{
+      id: BN;
+      owner: string;
+      name: string;
+      name2: string;
+      name3: string;
+      assetPlainText: string;
+      imageRessourcesIPFSAddress: string;
+      certifierID: BN;
+      assetType: BN;
+      changeDate: BN;
+      rawData: string;
+      0: BN;
+      1: string;
+      2: string;
+      3: string;
+      4: string;
+      5: string;
+      6: string;
+      7: BN;
+      8: BN;
+      9: BN;
+      10: string;
+    }>;
+
     isApprovedForAll(
       owner: string,
       operator: string
     ): TransactionObject<boolean>;
+
+    calcID(
+      assetType: number | string,
+      name: string | number[],
+      name2: string | number[],
+      name3: string | number[],
+      assetPlainText: string,
+      imageRessourcesIPFSAddress: string | number[],
+      changeDate: number | string,
+      rawData: string | number[]
+    ): TransactionObject<BN>;
 
     getIndexOfAssetType(assetName: string | number[]): TransactionObject<BN>;
 
@@ -120,12 +162,22 @@ export class DMDCertifiedUnique extends Contract {
       rawData: string | number[]
     ): TransactionObject<BN>;
 
+    acceptNewUniqueAsset(uniqueId: number | string): TransactionObject<BN>;
+
     owner(): TransactionObject<string>;
     isOwner(): TransactionObject<boolean>;
     isCertifier(): TransactionObject<boolean>;
     getAllAssetTypes(): TransactionObject<(string)[]>;
   };
   events: {
+    UniqueAssetProposed: ContractEvent<{
+      owner: string;
+      certifier: string;
+      id: BN;
+      0: string;
+      1: string;
+      2: BN;
+    }>;
     OwnershipTransferred: ContractEvent<{
       previousOwner: string;
       newOwner: string;

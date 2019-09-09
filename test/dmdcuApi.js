@@ -38,15 +38,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
-//import { contract } from "web3-eth-contract";
+var bn_js_1 = __importDefault(require("bn.js"));
+//import { Contract } from "web3";
 var web3_1 = __importDefault(require("web3"));
 var DmdcuApi = /** @class */ (function () {
+    // public cc: Eth["Contract"];
     function DmdcuApi(web3, abiJSonInterface, knownContractAddress) {
         this.web3 = web3;
         this.abiJSonInterface = abiJSonInterface;
         this.knownContractAddress = knownContractAddress;
         var contractRaw = new this.web3.eth.Contract(this.abiJSonInterface, this.knownContractAddress);
         this.contract = contractRaw;
+        this.contractJs = contractRaw;
     }
     DmdcuApi.prototype.addNewAssetType = function (web3account, assetTypeName) {
         return __awaiter(this, void 0, void 0, function () {
@@ -78,7 +81,7 @@ var DmdcuApi = /** @class */ (function () {
     };
     DmdcuApi.prototype.addNewAsset = function (web3account, addressOfOwner, assetType, name, name2, name3, assetPlainText, imageRessourcesIPFSAddress, changeDateInLinuxTime, rawData) {
         return __awaiter(this, void 0, void 0, function () {
-            var allAssetTypes, assetTypeID, result, txReceipt, pastLogs;
+            var allAssetTypes, assetTypeID, result, txReceipt, pastEventsOfContract, idUniqueAssetProposed, i, event_1, rawNewID;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.getAllAssetTypes()];
@@ -91,16 +94,26 @@ var DmdcuApi = /** @class */ (function () {
                         return [4 /*yield*/, this.contract.methods.addNewAsset(addressOfOwner, assetTypeID, this.toBytes32String(name), this.toBytes32String(name2), this.toBytes32String(name3), assetPlainText, this.toBytes32String(imageRessourcesIPFSAddress), '0x' + this.numberToUInt64Hex(changeDateInLinuxTime), rawData).send({ gas: '0x100000', from: web3account })];
                     case 2:
                         result = _a.sent();
-                        console.log('sendResult txHash:' + result);
                         return [4 /*yield*/, this.web3.eth.getTransactionReceipt(result.transactionHash)];
                     case 3:
                         txReceipt = _a.sent();
-                        console.log('sendResult receipt:', txReceipt);
-                        return [4 /*yield*/, this.web3.eth.getPastLogs({ fromBlock: txReceipt.blockNumber, toBlock: txReceipt.blockNumber })];
+                        return [4 /*yield*/, this.contractJs.getPastEvents("UniqueAssetProposed", { fromBlock: txReceipt.blockNumber, toBlock: txReceipt.blockNumber })];
                     case 4:
-                        pastLogs = _a.sent();
-                        console.log('getPastLogs:', pastLogs);
-                        return [2 /*return*/];
+                        pastEventsOfContract = _a.sent();
+                        for (i = 0; i < pastEventsOfContract.length; i++) {
+                            event_1 = pastEventsOfContract[i];
+                            if (event_1.transactionHash === result.transactionHash) {
+                                rawNewID = event_1.returnValues.id;
+                                if (idUniqueAssetProposed !== undefined) {
+                                    throw new Error('Unable to retrieve result of function call: more than one result found!');
+                                }
+                                idUniqueAssetProposed = new bn_js_1["default"](rawNewID, 10);
+                            }
+                        }
+                        if (idUniqueAssetProposed === undefined) {
+                            throw new Error('Unexpected behavior: missing UniqueAssetProposed Event!');
+                        }
+                        return [2 /*return*/, idUniqueAssetProposed];
                 }
             });
         });

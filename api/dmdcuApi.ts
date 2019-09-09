@@ -3,21 +3,25 @@ import { DMDCertifiedUnique } from './contracts/DMDCertifiedUnique';
 import { TransactionObject } from  './contracts/types'
 import BN from "bn.js";
 
-//import { contract } from "web3-eth-contract";
+//import { Contract } from "web3";
 import web3 from 'web3';
+
+// import web3.eth.Contract as Contract  from 'web3';
 
 //import Contract from "web3/eth/contract";
 
-import * as fs from 'fs';
-import * as path from 'path';
+import Eth from 'web3/eth';
 
 export class DmdcuApi {
 
     public contract: DMDCertifiedUnique;
+    public contractJs: any;
+    // public cc: Eth["Contract"];
 
     constructor (public web3: web3, public abiJSonInterface : any[], public knownContractAddress: string) {
         const contractRaw = new this.web3.eth.Contract(this.abiJSonInterface, this.knownContractAddress);
         this.contract = contractRaw as unknown as DMDCertifiedUnique;
+        this.contractJs = contractRaw;
     }
 
     public async addNewAssetType(web3account: string, assetTypeName: string) {
@@ -44,9 +48,7 @@ export class DmdcuApi {
 
     public async addNewAsset(web3account: string, addressOfOwner: string, assetType: string, name: string, name2: string, name3: string,
         assetPlainText: string, imageRessourcesIPFSAddress,
-        changeDateInLinuxTime: number, rawData: number[]) {
-
-        
+        changeDateInLinuxTime: number, rawData: number[]) : Promise<BN> {
 
         //console.log('rawDataHexString: ' + rawDataHexString);
         //const assetTypeID = await this.getIndexOfAssetType(assetType);
@@ -59,35 +61,28 @@ export class DmdcuApi {
 
         const result = await this.contract.methods.addNewAsset(addressOfOwner, assetTypeID, this.toBytes32String(name), this.toBytes32String(name2), this.toBytes32String(name3), assetPlainText, this.toBytes32String(imageRessourcesIPFSAddress), '0x' + this.numberToUInt64Hex(changeDateInLinuxTime), rawData).send({gas:'0x100000', from:web3account});
         
-        console.log('sendResult txHash:' + result);
         const txReceipt = await this.web3.eth.getTransactionReceipt(result.transactionHash);
+        const pastEventsOfContract = await this.contractJs.getPastEvents("UniqueAssetProposed", {fromBlock: txReceipt.blockNumber, toBlock: txReceipt.blockNumber});
         
+        let idUniqueAssetProposed: BN;
 
-        console.log('sendResult receipt:' ,txReceipt);
-        //const getEventsResult = await this.contract.events.UniqueAssetProposed.call({fromBlock: txReceipt.blockNumber, toBlock: txReceipt.blockNumber});
+        for (let i = 0; i < pastEventsOfContract.length; i++) {
+            const event = pastEventsOfContract[i];
+            if (event.transactionHash === result.transactionHash) {
+                const rawNewID = event.returnValues.id;
 
-        // console.log('getEventsResult:', getEventsResult);
+                if (idUniqueAssetProposed !== undefined) {
+                    throw new Error('Unable to retrieve result of function call: more than one result found!');
+                }
+                idUniqueAssetProposed = new BN(rawNewID, 10);
+            }
+        }
 
-        // // getEventsResult.callback(x => {
-        // //     console.log('got a callback:', x);
-        // // });
+        if (idUniqueAssetProposed === undefined) {
+            throw new Error('Unexpected behavior: missing UniqueAssetProposed Event!');
+        }
 
-        // const callbackResult = getEventsResult.callback();
-        // console.log('callbackResult: ', callbackResult);
-
-        const pastLogs = await this.web3.eth.getPastLogs({fromBlock: txReceipt.blockNumber, toBlock: txReceipt.blockNumber});
-        console.log('getPastLogs:', pastLogs);
-
-        // this.contract.events.UniqueAssetProposed({fromBlock: txReceipt.blockNumber, toBlock: txReceipt.blockNumber}, (error: Error, result: any) => {
-        //     if (result) {
-        //          console.log('callback: ', result);
-        //     }
-        //     if (error) {
-        //         console.log('error: ', error);
-        //     }
-        // });
-
-
+        return idUniqueAssetProposed;
     }
 
     public async getAllAssetTypes() : Promise<String[]> {

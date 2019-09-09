@@ -86,7 +86,7 @@ contract('DMDCertifiedUnique', (accounts) => {
 
   async function addNewMoto(certifier, targetAddress) {
     
-    const result = await api.addNewMotorcycle(certifier, targetAddress, 'motorcycle', 'myName1', 'myName2', 'myName3',
+    return api.addNewMotorcycle(certifier, targetAddress, 'motorcycle', 'myName1', 'myName2', 'myName3',
       'this is worlds first blockchain certified motorcycle', '',
       Date.now()/1000, 100, 611, 213, 0, 1);
   }
@@ -103,14 +103,39 @@ contract('DMDCertifiedUnique', (accounts) => {
 
   })
 
+  let idFirstMoto;
+
   it('certifier1 creates an motorcycle certificate for endConsumer1', async()=> {
-    await addNewMoto(certifier1, endConsumer1);
+    idFirstMoto = await addNewMoto(certifier1, endConsumer1);
   })
 
 
-  // it('endConsumer1 accepts that certificate', async()=> {
+  it('endConsumer2 tries to accepts that certificate, but fails', async()=> {
 
-  // })
+    try{
+      await api.acceptNewUniqueAsset(endConsumer2, idFirstMoto);
+    } catch(error) {
+      return false;
+    }
+    throw new Error('acceptNewUniqueAsset should fail, but it dit not.');
+  })
+
+
+  it('certifier1 tries to accepts that certificate, but fails', async()=> {
+
+    try{
+      await api.acceptNewUniqueAsset(certifier1, idFirstMoto);
+    } catch(error) {
+      return false;
+    }
+    throw new Error('acceptNewUniqueAsset should fail, but it dit not.');
+  })
+
+
+  it('endConsumer1 accepts that certificate', async()=> {
+
+    await api.acceptNewUniqueAsset(endConsumer1, idFirstMoto);
+  })
 
   // it('blockservOrganisation adds certifier2', async()=> {
 

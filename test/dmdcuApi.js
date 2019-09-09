@@ -173,6 +173,13 @@ var DmdcuApi = /** @class */ (function () {
     DmdcuApi.prototype.motorCycleValuesToNumberArray = function (horsepower, weight, topSpeed, vintageGrade, techGrade) {
         return this.hexStringToNumberArray(this.motorCycleValuesToHexString(horsepower, weight, topSpeed, vintageGrade, techGrade));
     };
+    DmdcuApi.prototype.acceptNewUniqueAsset = function (web3Account, id) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, this.contract.methods.acceptNewUniqueAsset("0x" + id.toString('hex')).call({ from: web3Account, gas: '0x100000' })];
+            });
+        });
+    };
     DmdcuApi.prototype.numberToUInt8Hex = function (val) {
         return this.numberToXByteHex(val, 1);
     };

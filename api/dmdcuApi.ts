@@ -134,6 +134,10 @@ export class DmdcuApi {
         return this.hexStringToNumberArray(this.motorCycleValuesToHexString(horsepower, weight, topSpeed, vintageGrade, techGrade));
     }
 
+    public async acceptNewUniqueAsset(web3Account: string, id: BN) {
+        return this.contract.methods.acceptNewUniqueAsset(`0x${id.toString('hex')}`).call({from: web3Account, gas:'0x100000'});
+    }
+
     private numberToUInt8Hex(val: number) {
         return this.numberToXByteHex(val, 1);
     }

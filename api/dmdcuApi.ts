@@ -39,11 +39,11 @@ export class DmdcuApi {
     public async addNewMotorcycle(web3account: string, addressOfOwner: string, assetType: string, name: string, name2: string, name3: string,
         assetPlainText: string, imageRessourcesIPFSAddress,
         changeDateInLinuxTime: number, horsepower: number, weight: number, topSpeed: number,
-        vintageGrade: number, techGrade: number) {
+        vintageGrade: number, techGrade: number) : Promise<BN> {
 
-            const motorcylceValues = this.motorCycleValuesToNumberArray(horsepower, weight, topSpeed, vintageGrade, techGrade);
-            return this.addNewAsset(web3account, addressOfOwner, assetType, name, name2, name3, assetPlainText, imageRessourcesIPFSAddress, 
-                changeDateInLinuxTime, motorcylceValues);
+        const motorcylceValues = this.motorCycleValuesToNumberArray(horsepower, weight, topSpeed, vintageGrade, techGrade);
+        return this.addNewAsset(web3account, addressOfOwner, assetType, name, name2, name3, assetPlainText, imageRessourcesIPFSAddress, 
+            changeDateInLinuxTime, motorcylceValues);
     }
 
     public async addNewAsset(web3account: string, addressOfOwner: string, assetType: string, name: string, name2: string, name3: string,
@@ -60,10 +60,10 @@ export class DmdcuApi {
         }
 
         const result = await this.contract.methods.addNewAsset(addressOfOwner, assetTypeID, this.toBytes32String(name), this.toBytes32String(name2), this.toBytes32String(name3), assetPlainText, this.toBytes32String(imageRessourcesIPFSAddress), '0x' + this.numberToUInt64Hex(changeDateInLinuxTime), rawData).send({gas:'0x100000', from:web3account});
-        
+
         const txReceipt = await this.web3.eth.getTransactionReceipt(result.transactionHash);
         const pastEventsOfContract = await this.contractJs.getPastEvents("UniqueAssetProposed", {fromBlock: txReceipt.blockNumber, toBlock: txReceipt.blockNumber});
-        
+
         let idUniqueAssetProposed: BN;
 
         for (let i = 0; i < pastEventsOfContract.length; i++) {
@@ -83,6 +83,10 @@ export class DmdcuApi {
         }
 
         return idUniqueAssetProposed;
+    }
+
+    public async getAllUniques() {
+        return this.contract.methods.getAllUniques().call();
     }
 
     public async getAllAssetTypes() : Promise<String[]> {
@@ -135,7 +139,7 @@ export class DmdcuApi {
     }
 
     public async acceptNewUniqueAsset(web3Account: string, id: BN) {
-        return this.contract.methods.acceptNewUniqueAsset(`0x${id.toString('hex')}`).call({from: web3Account, gas:'0x100000'});
+        return this.contract.methods.acceptNewUniqueAsset(`0x${id.toString('hex')}`).send({from: web3Account, gas:'0x100000'});
     }
 
     private numberToUInt8Hex(val: number) {

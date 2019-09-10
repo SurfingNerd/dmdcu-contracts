@@ -20,6 +20,8 @@ export class DMDCertifiedUnique extends Contract {
 
     getApproved(tokenId: number | string): TransactionObject<string>;
 
+    uniqueIDs(arg0: number | string): TransactionObject<BN>;
+
     certifiersAddressIndex(arg0: string): TransactionObject<BN>;
 
     uniques(
@@ -106,6 +108,8 @@ export class DMDCertifiedUnique extends Contract {
       operator: string
     ): TransactionObject<boolean>;
 
+    getUnique(index: number | string): TransactionObject<string>;
+
     calcID(
       assetType: number | string,
       name: string | number[],
@@ -166,6 +170,21 @@ export class DMDCertifiedUnique extends Contract {
 
     owner(): TransactionObject<string>;
     isOwner(): TransactionObject<boolean>;
+    getAllUniques(): TransactionObject<
+      ({
+        id: BN;
+        owner: string;
+        name: string;
+        name2: string;
+        name3: string;
+        assetPlainText: string;
+        imageRessourcesIPFSAddress: string;
+        certifierID: BN;
+        assetType: BN;
+        changeDate: BN;
+        rawData: string;
+      })[]
+    >;
     isCertifier(): TransactionObject<boolean>;
     getAllAssetTypes(): TransactionObject<(string)[]>;
   };

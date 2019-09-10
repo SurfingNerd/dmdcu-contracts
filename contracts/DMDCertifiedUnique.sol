@@ -1,4 +1,5 @@
 pragma solidity >=0.5.8 <0.6.0;
+pragma experimental ABIEncoderV2;
 
 import 'openzeppelin-solidity/contracts/token/ERC721/ERC721.sol';
 import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
@@ -46,32 +47,13 @@ contract DMDCertifiedUnique is ERC721, Ownable {
         bytes rawData;
     }
 
-
-        //all values are meant to have 3 dots precision. example: 86.731 horse power = 86731
-    // uint32[] dataHorsepower;
-    // uint32[] dataWeight;
-    // uint32[] dataTopSpeed;
-
-
-
-    //     //0: no vintage
-    //     //1: has vintage elements
-    //     //2: pure vintage
-    // uint8[] dataVintageGrade;
-
-    //     //0: old base
-    //     //1: modern bike
-    //     //2: state of the art high end technology
-    // uint8[] dataTechGrade;
-
-
     Certifier[] public certifiers;
     bytes32[] public assetTypes;
-    //UniqueAsset[] public uniques;
+
+    uint256[] public uniqueIDs;
 
     // proposed unique assets are proposed by certifiers and have not been accepted yet by the owner of the assets.
     mapping(uint256 => UniqueAsset) public proposedUniques;
-
     mapping(uint256 => UniqueAsset) public uniques;
 
     mapping(address => uint256) public certifiersAddressIndex;
@@ -90,7 +72,33 @@ contract DMDCertifiedUnique is ERC721, Ownable {
         _;
     }
 
-    function isCertifier() public view returns (bool) {
+    function getAllUniques()
+    public
+    view
+    returns (UniqueAsset[] memory) {
+        UniqueAsset[] memory result = new UniqueAsset[](uniqueIDs.length);
+
+        for (uint i = 0; i < uniqueIDs.length; i++) {
+            UniqueAsset memory asset = uniques[uniqueIDs[i]];
+            result[i] = asset;
+        }
+        return result;
+    }
+
+    function getUnique(uint256 index)
+    public
+    view
+    returns (bytes32) {
+        return (bytes32)(uniques[index].name);
+        //return (bytes32)(index);
+        //return  uniques[uniqueIDs[index]].name;
+        //return (bytes32)(uniqueIDs[index]);
+    }
+
+    function isCertifier()
+    public
+    view
+    returns (bool) {
         //return false;
         return certifiersAddressIndex[msg.sender] != 0;
     }
@@ -173,6 +181,7 @@ contract DMDCertifiedUnique is ERC721, Ownable {
         super._mint(msg.sender, uniqueId);
         uniques[uniqueId] = uniqueAsset;
         delete proposedUniques[uniqueId];
+        uniqueIDs.push(uniqueId);
 
         return uniqueId;
     }
@@ -196,5 +205,4 @@ contract DMDCertifiedUnique is ERC721, Ownable {
         }
         return -1;
     }
-
 }

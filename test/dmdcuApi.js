@@ -118,6 +118,13 @@ var DmdcuApi = /** @class */ (function () {
             });
         });
     };
+    DmdcuApi.prototype.getAllUniques = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, this.contract.methods.getAllUniques().call()];
+            });
+        });
+    };
     DmdcuApi.prototype.getAllAssetTypes = function () {
         return __awaiter(this, void 0, void 0, function () {
             var assetTypesResult, result, i;
@@ -176,7 +183,7 @@ var DmdcuApi = /** @class */ (function () {
     DmdcuApi.prototype.acceptNewUniqueAsset = function (web3Account, id) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/, this.contract.methods.acceptNewUniqueAsset("0x" + id.toString('hex')).call({ from: web3Account, gas: '0x100000' })];
+                return [2 /*return*/, this.contract.methods.acceptNewUniqueAsset("0x" + id.toString('hex')).send({ from: web3Account, gas: '0x100000' })];
             });
         });
     };

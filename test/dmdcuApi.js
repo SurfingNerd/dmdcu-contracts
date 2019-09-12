@@ -105,7 +105,7 @@ var DmdcuApi = /** @class */ (function () {
                             event_1 = pastEventsOfContract[i];
                             if (event_1.transactionHash === result.transactionHash) {
                                 rawNewID = event_1.returnValues.tokenId;
-                                console.log('rawNewID:' + rawNewID);
+                                //console.log('rawNewID:' + rawNewID);
                                 if (!idUniqueAssetCreated.isZero()) {
                                     throw new Error('Unable to retrieve result of function call: more than one result found!');
                                 }

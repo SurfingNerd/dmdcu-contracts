@@ -70,18 +70,18 @@ var DmdcuApi = /** @class */ (function () {
             });
         });
     };
-    DmdcuApi.prototype.addNewMotorcycle = function (web3account, addressOfOwner, assetType, name, name2, name3, assetPlainText, imageRessourcesIPFSAddress, changeDateInLinuxTime, horsepower, weight, topSpeed, vintageGrade, techGrade) {
+    DmdcuApi.prototype.addNewMotorcycle = function (web3account, assetType, name, name2, name3, assetPlainText, imageRessourcesIPFSAddress, changeDateInLinuxTime, horsepower, weight, topSpeed, vintageGrade, techGrade) {
         return __awaiter(this, void 0, void 0, function () {
             var motorcylceValues;
             return __generator(this, function (_a) {
                 motorcylceValues = this.motorCycleValuesToNumberArray(horsepower, weight, topSpeed, vintageGrade, techGrade);
-                return [2 /*return*/, this.addNewAsset(web3account, addressOfOwner, assetType, name, name2, name3, assetPlainText, imageRessourcesIPFSAddress, changeDateInLinuxTime, motorcylceValues)];
+                return [2 /*return*/, this.addNewAsset(web3account, assetType, name, name2, name3, assetPlainText, imageRessourcesIPFSAddress, changeDateInLinuxTime, motorcylceValues)];
             });
         });
     };
-    DmdcuApi.prototype.addNewAsset = function (web3account, addressOfOwner, assetType, name, name2, name3, assetPlainText, imageRessourcesIPFSAddress, changeDateInLinuxTime, rawData) {
+    DmdcuApi.prototype.addNewAsset = function (web3account, assetType, name, name2, name3, assetPlainText, imageRessourcesIPFSAddress, changeDateInLinuxTime, rawData) {
         return __awaiter(this, void 0, void 0, function () {
-            var allAssetTypes, assetTypeID, result, txReceipt, pastEventsOfContract, idUniqueAssetProposed, i, event_1, rawNewID;
+            var allAssetTypes, assetTypeID, result, txReceipt, pastEventsOfContract, idUniqueAssetCreated, i, event_1, rawNewID;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.getAllAssetTypes()];
@@ -91,29 +91,32 @@ var DmdcuApi = /** @class */ (function () {
                         if (assetTypeID < 0) {
                             throw Error("AssetType " + assetType + " is not known to this contract. add it first with addNewAssetType.");
                         }
-                        return [4 /*yield*/, this.contract.methods.addNewAsset(addressOfOwner, assetTypeID, this.toBytes32String(name), this.toBytes32String(name2), this.toBytes32String(name3), assetPlainText, this.toBytes32String(imageRessourcesIPFSAddress), '0x' + this.numberToUInt64Hex(changeDateInLinuxTime), rawData).send({ gas: '0x100000', from: web3account })];
+                        return [4 /*yield*/, this.contract.methods.addNewAsset(assetTypeID, this.toBytes32String(name), this.toBytes32String(name2), this.toBytes32String(name3), assetPlainText, this.toBytes32String(imageRessourcesIPFSAddress), '0x' + this.numberToUInt64Hex(changeDateInLinuxTime), rawData).send({ gas: '0x100000', from: web3account })];
                     case 2:
                         result = _a.sent();
                         return [4 /*yield*/, this.web3.eth.getTransactionReceipt(result.transactionHash)];
                     case 3:
                         txReceipt = _a.sent();
-                        return [4 /*yield*/, this.contractJs.getPastEvents("UniqueAssetProposed", { fromBlock: txReceipt.blockNumber, toBlock: txReceipt.blockNumber })];
+                        return [4 /*yield*/, this.contractJs.getPastEvents("Transfer", { fromBlock: txReceipt.blockNumber, toBlock: txReceipt.blockNumber })];
                     case 4:
                         pastEventsOfContract = _a.sent();
+                        idUniqueAssetCreated = new bn_js_1["default"](0);
                         for (i = 0; i < pastEventsOfContract.length; i++) {
                             event_1 = pastEventsOfContract[i];
                             if (event_1.transactionHash === result.transactionHash) {
-                                rawNewID = event_1.returnValues.id;
-                                if (idUniqueAssetProposed !== undefined) {
+                                rawNewID = event_1.returnValues.tokenId;
+                                console.log('rawNewID:' + rawNewID);
+                                if (!idUniqueAssetCreated.isZero()) {
                                     throw new Error('Unable to retrieve result of function call: more than one result found!');
                                 }
-                                idUniqueAssetProposed = new bn_js_1["default"](rawNewID, 10);
+                                idUniqueAssetCreated = new bn_js_1["default"](rawNewID, 10);
+                                //idUniqueAssetCreated = event.returnValues.tokenId;
                             }
                         }
-                        if (idUniqueAssetProposed === undefined) {
+                        if (idUniqueAssetCreated.isZero()) {
                             throw new Error('Unexpected behavior: missing UniqueAssetProposed Event!');
                         }
-                        return [2 /*return*/, idUniqueAssetProposed];
+                        return [2 /*return*/, idUniqueAssetCreated];
                 }
             });
         });
@@ -179,13 +182,6 @@ var DmdcuApi = /** @class */ (function () {
     };
     DmdcuApi.prototype.motorCycleValuesToNumberArray = function (horsepower, weight, topSpeed, vintageGrade, techGrade) {
         return this.hexStringToNumberArray(this.motorCycleValuesToHexString(horsepower, weight, topSpeed, vintageGrade, techGrade));
-    };
-    DmdcuApi.prototype.acceptNewUniqueAsset = function (web3Account, id) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/, this.contract.methods.acceptNewUniqueAsset("0x" + id.toString('hex')).send({ from: web3Account, gas: '0x100000' })];
-            });
-        });
     };
     DmdcuApi.prototype.numberToUInt8Hex = function (val) {
         return this.numberToXByteHex(val, 1);

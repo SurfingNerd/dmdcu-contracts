@@ -84,9 +84,9 @@ contract('DMDCertifiedUnique', (accounts) => {
   })
 
 
-  async function addNewMoto(certifier, targetAddress) {
+  async function addNewMoto(certifier) {
     
-    return api.addNewMotorcycle(certifier, targetAddress, 'motorcycle', 'myName1', 'myName2', 'myName3',
+    return api.addNewMotorcycle(certifier, 'motorcycle', 'myName1', 'myName2', 'myName3',
       'this is worlds first blockchain certified motorcycle', '',
       Date.now()/1000, 100, 611, 213, 0, 1);
   }
@@ -95,7 +95,7 @@ contract('DMDCertifiedUnique', (accounts) => {
   it('blockservOrganisation tries to create an motorcycle certificate for endConsumer1, but fails', async()=> {
 
     try{
-      await addNewMoto(blockservOrganisation, endConsumer1);
+      await addNewMoto(blockservOrganisation);
     } catch(error) {
       return;
     }
@@ -105,54 +105,54 @@ contract('DMDCertifiedUnique', (accounts) => {
 
   let idFirstMoto;
 
-  it('certifier1 creates an motorcycle certificate for endConsumer1', async()=> {
-    idFirstMoto = await addNewMoto(certifier1, endConsumer1);
+  it('certifier1 creates an motorcycle certificate', async()=> {
+    idFirstMoto = await addNewMoto(certifier1);
   })
 
 
-  it('endConsumer2 tries to accept that certificate, but fails', async()=> {
+  // it('endConsumer2 tries to accept that certificate, but fails', async()=> {
 
-    try{
-      await api.acceptNewUniqueAsset(endConsumer2, idFirstMoto);
-    } catch(error) {
-      return;
-    }
-    throw new Error('acceptNewUniqueAsset should fail, but it dit not.');
-  })
-
-
-
-  it('certifier1 tries to accepts that certificate, but fails', async()=> {
-
-    try{
-      await api.acceptNewUniqueAsset(certifier1, idFirstMoto);
-    } catch(error) {
-      return;
-    }
-    throw new Error('acceptNewUniqueAsset should fail, but it dit not.');
-  })
-
-  it('endConsumer1 accepts fantasy number certificate, but fails.', async()=> {
-    try{
-      await api.acceptNewUniqueAsset(endConsumer1, new BN('0x3dbf9d2e186dabe6922c32b02a290105b0cd4ff00cf6fc076a6a24f61c3fe498', 'hex'));
-    } catch(error) {
-      return;
-    }
-    throw new Error('acceptNewUniqueAsset should fail, but it dit not.');
-  })
+  //   try{
+  //     await api.acceptNewUniqueAsset(endConsumer2, idFirstMoto);
+  //   } catch(error) {
+  //     return;
+  //   }
+  //   throw new Error('acceptNewUniqueAsset should fail, but it dit not.');
+  // })
 
 
 
-  it('endConsumer1 accepts that certificate', async()=> {
+  // it('certifier1 tries to accepts that certificate, but fails', async()=> {
 
-    await api.acceptNewUniqueAsset(endConsumer1,  new BN(idFirstMoto, 'hex'));
-  })
+  //   try{
+  //     await api.acceptNewUniqueAsset(certifier1, idFirstMoto);
+  //   } catch(error) {
+  //     return;
+  //   }
+  //   throw new Error('acceptNewUniqueAsset should fail, but it dit not.');
+  // })
+
+  // it('endConsumer1 accepts fantasy number certificate, but fails.', async()=> {
+  //   try{
+  //     await api.acceptNewUniqueAsset(endConsumer1, new BN('0x3dbf9d2e186dabe6922c32b02a290105b0cd4ff00cf6fc076a6a24f61c3fe498', 'hex'));
+  //   } catch(error) {
+  //     return;
+  //   }
+  //   throw new Error('acceptNewUniqueAsset should fail, but it dit not.');
+  // })
+
+
+
+  // it('endConsumer1 accepts that certificate', async()=> {
+
+  //   await api.acceptNewUniqueAsset(endConsumer1,  new BN(idFirstMoto, 'hex'));
+  // })
 
 
   it('query all available assets.', async()=> {
 
-    await api.getAllUniques();
-
+    const allUniques = await api.getAllUniques();
+    //console.log('All Uniques:', allUniques);
   })
 
   

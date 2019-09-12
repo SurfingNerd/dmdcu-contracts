@@ -20,31 +20,29 @@ export class DMDCertifiedUnique extends Contract {
 
     getApproved(tokenId: number | string): TransactionObject<string>;
 
-    uniqueIDs(arg0: number | string): TransactionObject<BN>;
-
     certifiersAddressIndex(arg0: string): TransactionObject<BN>;
 
     uniques(
       arg0: number | string
     ): TransactionObject<{
-      id: BN;
       owner: string;
       name: string;
       name2: string;
       name3: string;
       assetPlainText: string;
       imageRessourcesIPFSAddress: string;
+      id: BN;
       certifierID: BN;
       assetType: BN;
       changeDate: BN;
       rawData: string;
-      0: BN;
+      0: string;
       1: string;
       2: string;
       3: string;
       4: string;
       5: string;
-      6: string;
+      6: BN;
       7: BN;
       8: BN;
       9: BN;
@@ -76,50 +74,12 @@ export class DMDCertifiedUnique extends Contract {
       6: BN;
     }>;
 
-    proposedUniques(
-      arg0: number | string
-    ): TransactionObject<{
-      id: BN;
-      owner: string;
-      name: string;
-      name2: string;
-      name3: string;
-      assetPlainText: string;
-      imageRessourcesIPFSAddress: string;
-      certifierID: BN;
-      assetType: BN;
-      changeDate: BN;
-      rawData: string;
-      0: BN;
-      1: string;
-      2: string;
-      3: string;
-      4: string;
-      5: string;
-      6: string;
-      7: BN;
-      8: BN;
-      9: BN;
-      10: string;
-    }>;
-
     isApprovedForAll(
       owner: string,
       operator: string
     ): TransactionObject<boolean>;
 
     getUnique(index: number | string): TransactionObject<string>;
-
-    calcID(
-      assetType: number | string,
-      name: string | number[],
-      name2: string | number[],
-      name3: string | number[],
-      assetPlainText: string,
-      imageRessourcesIPFSAddress: string | number[],
-      changeDate: number | string,
-      rawData: string | number[]
-    ): TransactionObject<BN>;
 
     getIndexOfAssetType(assetName: string | number[]): TransactionObject<BN>;
 
@@ -155,7 +115,6 @@ export class DMDCertifiedUnique extends Contract {
     addAssetType(typeName: string | number[]): TransactionObject<BN>;
 
     addNewAsset(
-      owner: string,
       assetType: number | string,
       name: string | number[],
       name2: string | number[],
@@ -166,19 +125,17 @@ export class DMDCertifiedUnique extends Contract {
       rawData: string | number[]
     ): TransactionObject<BN>;
 
-    acceptNewUniqueAsset(uniqueId: number | string): TransactionObject<BN>;
-
     owner(): TransactionObject<string>;
     isOwner(): TransactionObject<boolean>;
     getAllUniques(): TransactionObject<
       ({
-        id: BN;
         owner: string;
         name: string;
         name2: string;
         name3: string;
         assetPlainText: string;
         imageRessourcesIPFSAddress: string;
+        id: BN;
         certifierID: BN;
         assetType: BN;
         changeDate: BN;
@@ -189,14 +146,6 @@ export class DMDCertifiedUnique extends Contract {
     getAllAssetTypes(): TransactionObject<(string)[]>;
   };
   events: {
-    UniqueAssetProposed: ContractEvent<{
-      owner: string;
-      certifier: string;
-      id: BN;
-      0: string;
-      1: string;
-      2: BN;
-    }>;
     OwnershipTransferred: ContractEvent<{
       previousOwner: string;
       newOwner: string;

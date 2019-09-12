@@ -27,7 +27,7 @@ contract DMDCertifiedUnique is ERC721, Ownable {
     }
 
     struct UniqueAsset {
-        uint256 id;
+        
         address owner;
         bytes32 name;
         bytes32 name2;
@@ -37,6 +37,7 @@ contract DMDCertifiedUnique is ERC721, Ownable {
         //IPFS Hash with the imageRessources. (to be defined what is expected)
         bytes32 imageRessourcesIPFSAddress;
 
+        uint32 id;
         //array index of the certifer ID
         uint16 certifierID;
         uint16 assetType;
@@ -50,19 +51,13 @@ contract DMDCertifiedUnique is ERC721, Ownable {
     Certifier[] public certifiers;
     bytes32[] public assetTypes;
 
-    uint256[] public uniqueIDs;
 
     // proposed unique assets are proposed by certifiers and have not been accepted yet by the owner of the assets.
-    mapping(uint256 => UniqueAsset) public proposedUniques;
-    mapping(uint256 => UniqueAsset) public uniques;
+    //mapping(uint256 => UniqueAsset) public proposedUniques;
+    UniqueAsset[] public uniques;
+    
 
     mapping(address => uint256) public certifiersAddressIndex;
-
-    event UniqueAssetProposed (
-        address indexed owner,
-        address indexed certifier,
-        uint256 id
-    );
 
     /**
      * @dev Throws if called by any account other than the owner.
@@ -76,13 +71,14 @@ contract DMDCertifiedUnique is ERC721, Ownable {
     public
     view
     returns (UniqueAsset[] memory) {
-        UniqueAsset[] memory result = new UniqueAsset[](uniqueIDs.length);
+        // UniqueAsset[] memory result = new UniqueAsset[](uniqueIDs.length);
 
-        for (uint i = 0; i < uniqueIDs.length; i++) {
-            UniqueAsset memory asset = uniques[uniqueIDs[i]];
-            result[i] = asset;
-        }
-        return result;
+        // for (uint i = 0; i < uniqueIDs.length; i++) {
+        //     UniqueAsset memory asset = uniques[uniqueIDs[i]];
+        //     result[i] = asset;
+        // }
+        // return result;
+        return uniques;
     }
 
     function getUnique(uint256 index)
@@ -90,9 +86,6 @@ contract DMDCertifiedUnique is ERC721, Ownable {
     view
     returns (bytes32) {
         return (bytes32)(uniques[index].name);
-        //return (bytes32)(index);
-        //return  uniques[uniqueIDs[index]].name;
-        //return (bytes32)(uniqueIDs[index]);
     }
 
     function isCertifier()
@@ -123,68 +116,50 @@ contract DMDCertifiedUnique is ERC721, Ownable {
         assetTypes.push(typeName);
     }
 
-    function addNewAsset(address owner, uint16 assetType, bytes32 name, bytes32 name2, bytes32 name3,
+    function addNewAsset(uint16 assetType, bytes32 name, bytes32 name2, bytes32 name3,
         string memory assetPlainText, bytes32 imageRessourcesIPFSAddress,
         uint64 changeDate, bytes memory rawData)
     public
     onlyCertifier
     returns (uint256) {
-
         //todo: tokenURI.
         //super._setTokenURI(_tokenId, _tokenURI);
 
         require(assetType < assetTypes.length, 'assetType does not exist.');
-
         uint256 certifierID = certifiersAddressIndex[msg.sender];
         require(certifierID >= 0, 'the provided certifierAddress is not a known certifier!');
 
-
-        uint256 id = calcID(assetType,name, name2, name3,
-         assetPlainText, imageRessourcesIPFSAddress,
-         changeDate, rawData);
+        uint256 id = uniques.length + 1;
         //the first asset will have the number 1, we don't start at zero.
 
-
         //todo: add plausibility check of changeDate.
+        super._mint(msg.sender, id);
 
-        proposedUniques[id] = UniqueAsset(id, owner, name, name2, name3, assetPlainText, imageRessourcesIPFSAddress,
-            (uint16)(certifierID), assetType, changeDate, rawData);
-
-        emit UniqueAssetProposed(owner, msg.sender, id);
+        uniques.push(UniqueAsset(msg.sender, name, name2, name3, assetPlainText, imageRessourcesIPFSAddress,(uint32)(id),
+            (uint16)(certifierID), assetType, changeDate, rawData));
 
         return id;
         //return 0;
     }
 
-    function calcID(uint16 assetType, bytes32 name, bytes32 name2, bytes32 name3,
-        string memory assetPlainText, bytes32 imageRessourcesIPFSAddress,
-        uint64 changeDate, bytes memory rawData)
-    public
-    pure
-    returns (uint256) {
-        return uint256(keccak256(abi.encodePacked(assetType,name, name2, name3,
-         assetPlainText, imageRessourcesIPFSAddress,
-         changeDate, rawData)));
-    }
-
     //accepts the new unique assetr with the given indexID
-    function acceptNewUniqueAsset(uint256 uniqueId)
-    public
-    returns (uint256){
+    // function acceptNewUniqueAsset(uint256 uniqueId)
+    // public
+    // returns (uint256){
 
-        UniqueAsset storage uniqueAsset = proposedUniques[uniqueId];
+    //     UniqueAsset storage uniqueAsset = proposedUniques[uniqueId];
 
-        require(uniqueAsset.id == uniqueId, 'The accepted asset requires to match the unique ID');
-        require(uniqueAsset.owner == msg.sender, 'The accepted asset requires to match the unique ID');
-        require(uniques[uniqueId].id == 0, 'There exists already a unique with this ID');
+    //     require(uniqueAsset.id == uniqueId, 'The accepted asset requires to match the unique ID');
+    //     require(uniqueAsset.owner == msg.sender, 'The accepted asset requires to match the unique ID');
+    //     require(uniques[uniqueId].id == 0, 'There exists already a unique with this ID');
 
-        super._mint(msg.sender, uniqueId);
-        uniques[uniqueId] = uniqueAsset;
-        delete proposedUniques[uniqueId];
-        uniqueIDs.push(uniqueId);
+    //     super._mint(msg.sender, uniqueId);
+    //     uniques[uniqueId] = uniqueAsset;
+    //     delete proposedUniques[uniqueId];
+    //     uniqueIDs.push(uniqueId);
 
-        return uniqueId;
-    }
+    //     return uniqueId;
+    // }
 
     function getAllAssetTypes()
     public

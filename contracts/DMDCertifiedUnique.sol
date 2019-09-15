@@ -127,7 +127,6 @@ contract DMDCertifiedUnique is ERC721, Ownable {
     returns (uint32) {
         uint32 certifierID = certifiersAddressIndex[certifierAddress];
         //TODO: the mapping also returns 0 as default ?!
-        
         //require(certifiers[certifierID] == certifierAddress, 'given certifierAddress is not a known certifier.');
         return certifierID;
     }

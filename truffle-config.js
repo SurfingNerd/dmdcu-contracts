@@ -18,11 +18,12 @@
  *
  */
 
-// const HDWalletProvider = require('truffle-hdwallet-provider');
+const HDWalletProvider = require('truffle-hdwallet-provider');
 // const infuraKey = "fj4jll3k.....";
 //
 // const fs = require('fs');
-// const mnemonic = fs.readFileSync(".secret").toString().trim();
+
+//const PrivateKeyProvider = require('truffle-privatekey-provider');
 
 module.exports = {
   /**
@@ -75,6 +76,20 @@ module.exports = {
       // network_id: 2111,   // This network is yours, in the cloud.
       // production: true    // Treats this network as if it was a public net. (default: false)
     // }
+
+    //settle liquid april canvas month devote primary pause sibling coffee decorate fashion expire patrol paper
+
+    tau1: {
+      //provider: () => new HDWalletProvider(process.env.HDWALLET, 'https://rpc.tau1.artis.network'),
+      provider: () => new HDWalletProvider('settle liquid april canvas month devote primary pause sibling coffee decorate fashion expire patrol paper', 'https://rpc.tau1.artis.network'),
+      gasPrice: 100000000000,
+      network_id: 246785,
+    },
+    sigma1: {
+      provider: () => new HDWalletProvider(process.env.HDWALLET, 'https://rpc.sigma1.artis.network'),
+      gasPrice: 1000000000,
+      network_id: 246529,
+    }
   },
 
   // Set default mocha options here, use special reporters etc.

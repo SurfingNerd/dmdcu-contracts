@@ -83,11 +83,12 @@ contract DMDCertifiedUnique is ERC721, Ownable {
         return uniques;
     }
 
-    function getUnique(uint256 index)
+    function getUnique(uint32 id)
     public
     view
-    returns (bytes32) {
-        return (bytes32)(uniques[index].name);
+    returns (UniqueAsset memory) {
+        require(id > 0, 'asset id starts with 1');
+        return (uniques[id - 1]);
     }
 
     function isCertifier()
@@ -127,7 +128,7 @@ contract DMDCertifiedUnique is ERC721, Ownable {
     returns (uint32) {
         uint32 certifierID = certifiersAddressIndex[certifierAddress];
         //TODO: the mapping also returns 0 as default ?!
-        
+
         //require(certifiers[certifierID] == certifierAddress, 'given certifierAddress is not a known certifier.');
         return certifierID;
     }

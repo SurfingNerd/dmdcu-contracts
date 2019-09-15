@@ -91,6 +91,11 @@ export class DmdcuApi {
         return this.contract.methods.getAllUniques().call();
     }
 
+    public async getUnique(id: number) {
+        
+        return this.contract.methods.getUnique(id).call();
+    }
+
     public async getAllAssetTypes() : Promise<String[]> {
 
         const assetTypesResult = await (await this.contract.methods.getAllAssetTypes.call({}).call({}) );

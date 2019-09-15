@@ -15,9 +15,10 @@ contract('DMDCertifiedUnique', (accounts) => {
   const blockservOrganisation = accounts[1];
   const certifier1 = accounts[2];
   const certifier2 = accounts[3];
-  const endConsumer1 = accounts[4];
-  const endConsumer2 = accounts[5];
-  const endConsumer3 = accounts[6];
+  const certifier3 = accounts[4];
+  const endConsumer1 = accounts[5];
+  const endConsumer2 = accounts[6];
+  const endConsumer3 = accounts[7];
 
   let uniquesContract;
   let api;
@@ -92,7 +93,7 @@ contract('DMDCertifiedUnique', (accounts) => {
   }
 
 
-  it('blockservOrganisation tries to create an motorcycle certificate for endConsumer1, but fails', async()=> {
+  it('blockservOrganisation fails creating an motorcycle certificate as expected', async()=> {
 
     try{
       await addNewMoto(blockservOrganisation);
@@ -102,6 +103,8 @@ contract('DMDCertifiedUnique', (accounts) => {
     throw new Error('addNewCertifier should fail, but it did not.');
 
   })
+
+
 
   let idFirstMoto;
 
@@ -149,9 +152,60 @@ contract('DMDCertifiedUnique', (accounts) => {
   // })
 
 
+  it('certifier2 fails creating an motorcycle certificate as expected (not whitelisted yet)', async()=> {
+
+    try{
+      await addNewMoto(certifier2);
+    } catch(error) {
+      return;
+    }
+    throw new Error('addNewCertifier should fail, but it did not.');
+
+  })
+
+  it('blockservOrganisation whitelists certifier2 and certifier3 as well', async()=> {
+    await api.addNewCertifier(blockservOrganisation, 'certifier2', '002',certifier2, 'www.certifier2.example', 'a second test certifier!', '');
+    await api.addNewCertifier(blockservOrganisation, 'certifier3', '003',certifier3, 'www.certifier3.example', 'a third test certifier!', '');
+  })
+
+  let moto2;
+  let moto3;
+
+  it('certifier2 creates moto2, certifier3 creates moto3', async()=> {
+
+    moto2 = api.addNewMotorcycle(certifier2, 'motorcycle', 'moto2', 'tha moto 2', 'm2',
+      'this is worlds second blockchain certified motorcycle', '',
+      Date.now()/1000, 86, 552, 194, 0, 1);
+
+    moto3 = api.addNewMotorcycle(certifier3, 'motorcycle', 'moto3', 'tha moto 3', 'm3',
+      'this is worlds third blockchain certified motorcycle', '',
+      Date.now()/1000, 99, 445, 181, 0, 1);
+
+  })
+
+
+  it('query assets 0 (zero) fails as expected.', async()=> {
+
+    try{
+      await api.getUnique(0);
+    } catch(error) {
+      return;
+    }
+    throw new Error('query assets 0 (zero) should fail, but it dit not.');
+
+    
+  })
+
+
+  
+
   it('query all available assets.', async()=> {
 
     const allUniques = await api.getAllUniques();
+
+    //console.log('2:' ,await api.getUnique(2));
+    //console.log('3:' ,await api.getUnique(3));
+
     //console.log('All Uniques:', allUniques);
   })
 

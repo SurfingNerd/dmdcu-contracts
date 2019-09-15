@@ -79,7 +79,21 @@ export class DMDCertifiedUnique extends Contract {
       operator: string
     ): TransactionObject<boolean>;
 
-    getUnique(index: number | string): TransactionObject<string>;
+    getUnique(
+      id: number | string
+    ): TransactionObject<{
+      owner: string;
+      name: string;
+      name2: string;
+      name3: string;
+      assetPlainText: string;
+      imageRessourcesIPFSAddress: string;
+      id: BN;
+      certifierID: BN;
+      assetType: BN;
+      changeDate: BN;
+      rawData: string;
+    }>;
 
     getCertifierID(certifierAddress: string): TransactionObject<BN>;
 

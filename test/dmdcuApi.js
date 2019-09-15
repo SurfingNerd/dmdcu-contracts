@@ -128,6 +128,13 @@ var DmdcuApi = /** @class */ (function () {
             });
         });
     };
+    DmdcuApi.prototype.getUnique = function (id) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, this.contract.methods.getUnique(id).call()];
+            });
+        });
+    };
     DmdcuApi.prototype.getAllAssetTypes = function () {
         return __awaiter(this, void 0, void 0, function () {
             var assetTypesResult, result, i;

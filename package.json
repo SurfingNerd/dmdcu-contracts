@@ -34,6 +34,7 @@
     "fs": "0.0.1-security",
     "openzeppelin-solidity": "^2.3.0",
     "truffle": "^5.0.30",
+    "truffle-hdwallet-provider": "^1.0.17",
     "typescript": "^3.5.3",
     "web3": "^1.2.1"
   },

@@ -18,7 +18,7 @@
  *
  */
 
-const HDWalletProvider = require('truffle-hdwallet-provider');
+const HDWalletProvider = require('@truffle/hdwallet-provider');
 // const infuraKey = "fj4jll3k.....";
 //
 // const fs = require('fs');
@@ -80,8 +80,10 @@ module.exports = {
     //settle liquid april canvas month devote primary pause sibling coffee decorate fashion expire patrol paper
 
     tau1: {
+
+      
       //provider: () => new HDWalletProvider(process.env.HDWALLET, 'https://rpc.tau1.artis.network'),
-      provider: () => new HDWalletProvider('settle liquid april canvas month devote primary pause sibling coffee decorate fashion expire patrol paper', 'https://rpc.tau1.artis.network'),
+      provider: () => new HDWalletProvider('settle liquid april canvas month devote primary pause sibling coffee decorate fashion expire patrol paper', 'https://rpc.tau1.artis.network', 0, 10),
       gasPrice: 100000000000,
       network_id: 246785,
     },

@@ -77,8 +77,6 @@ module.exports = {
       // production: true    // Treats this network as if it was a public net. (default: false)
     // }
 
-    //settle liquid april canvas month devote primary pause sibling coffee decorate fashion expire patrol paper
-
     tau1: {
 
       

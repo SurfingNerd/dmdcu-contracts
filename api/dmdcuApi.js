@@ -38,16 +38,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
+var abi_1 = __importDefault(require("./abi"));
 var bn_js_1 = __importDefault(require("bn.js"));
-//import { Contract } from "web3";
 var web3_1 = __importDefault(require("web3"));
 var DmdcuApi = /** @class */ (function () {
     // public cc: Eth["Contract"];
-    function DmdcuApi(web3, abiJSonInterface, knownContractAddress) {
+    function DmdcuApi(web3, knownContractAddress) {
         this.web3 = web3;
-        this.abiJSonInterface = abiJSonInterface;
         this.knownContractAddress = knownContractAddress;
-        var contractRaw = new this.web3.eth.Contract(this.abiJSonInterface, this.knownContractAddress);
+        var contractRaw = new this.web3.eth.Contract(abi_1["default"](), this.knownContractAddress);
         this.contract = contractRaw;
         this.contractJs = contractRaw;
     }
@@ -60,22 +59,27 @@ var DmdcuApi = /** @class */ (function () {
     };
     DmdcuApi.prototype.addNewCertifier = function (web3account, certifierName, officialID, mainAddress, website, text, imageIPFSAddress) {
         return __awaiter(this, void 0, void 0, function () {
-            var certifierNameHex, officialIDHex, websiteHex, imageIPFSAddressHex;
+            var certifierNameHex, officialIDHex, websiteHex, imageIPFSAddressHex, fromAccount;
             return __generator(this, function (_a) {
                 certifierNameHex = this.toBytes32String(certifierName);
                 officialIDHex = this.toBytes32String(officialID);
                 websiteHex = this.toBytes32String(website);
                 imageIPFSAddressHex = this.toBytes32String(imageIPFSAddress);
-                return [2 /*return*/, this.contract.methods.addCertifier(certifierNameHex, officialIDHex, mainAddress, websiteHex, text, imageIPFSAddressHex).send({ gas: '0x100000', from: web3account })];
+                // if (web3account === undefined || web3account === '') {
+                //   fromAccount = this.web3.eth.defaultAccount;
+                //   console.log('default account:'  + fromAccount);
+                // }
+                fromAccount = web3account;
+                return [2 /*return*/, this.contract.methods.addCertifier(certifierNameHex, officialIDHex, mainAddress, websiteHex, text, imageIPFSAddressHex).send({ gas: '0x100000', from: fromAccount })];
             });
         });
     };
-    DmdcuApi.prototype.addNewMotorcycle = function (web3account, assetType, name, name2, name3, assetPlainText, imageRessourcesIPFSAddress, changeDateInLinuxTime, horsepower, weight, topSpeed, vintageGrade, techGrade) {
+    DmdcuApi.prototype.addNewMotorcycle = function (web3account, name, name2, name3, assetPlainText, imageRessourcesIPFSAddress, changeDateInLinuxTime, horsepower, weight, topSpeed, vintageGrade, techGrade) {
         return __awaiter(this, void 0, void 0, function () {
             var motorcylceValues;
             return __generator(this, function (_a) {
                 motorcylceValues = this.motorCycleValuesToNumberArray(horsepower, weight, topSpeed, vintageGrade, techGrade);
-                return [2 /*return*/, this.addNewAsset(web3account, assetType, name, name2, name3, assetPlainText, imageRessourcesIPFSAddress, changeDateInLinuxTime, motorcylceValues)];
+                return [2 /*return*/, this.addNewAsset(web3account, 'motorcycle', name, name2, name3, assetPlainText, imageRessourcesIPFSAddress, changeDateInLinuxTime, motorcylceValues)];
             });
         });
     };
@@ -131,7 +135,7 @@ var DmdcuApi = /** @class */ (function () {
     DmdcuApi.prototype.getUnique = function (id) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/, this.contract.methods.getUnique(id).call()];
+                return [2 /*return*/, this.contract.methods.uniques(id - 1).call()];
             });
         });
     };
@@ -154,6 +158,13 @@ var DmdcuApi = /** @class */ (function () {
             });
         });
     };
+    DmdcuApi.prototype.getCertifier = function (id) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, this.contract.methods.certifiers.call({}, id).call({})];
+            });
+        });
+    };
     DmdcuApi.prototype.getIndexOfAssetType = function (assetType) {
         return __awaiter(this, void 0, void 0, function () {
             var assetTypeEncoded;
@@ -165,6 +176,20 @@ var DmdcuApi = /** @class */ (function () {
                     case 1: return [4 /*yield*/, (_a.sent()).call({}, assetTypeEncoded)];
                     case 2: return [2 /*return*/, _a.sent()];
                 }
+            });
+        });
+    };
+    DmdcuApi.prototype.isOwner = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, this.contract.methods.isOwner().call()];
+            });
+        });
+    };
+    DmdcuApi.prototype.isCertifier = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, this.contract.methods.isCertifier().call()];
             });
         });
     };
@@ -183,11 +208,42 @@ var DmdcuApi = /** @class */ (function () {
         //     //1: modern bike
         //     //2: state of the art high end technology
         // uint8[] dataTechGrade;
-        var result = "0x" + this.numberToUInt32Hex(horsepower * 1000) + this.numberToUInt32Hex(weight * 1000) + this.numberToUInt32Hex(topSpeed * 1000) + this.numberToUInt8Hex(vintageGrade) + this.numberTo8ByteHex(techGrade);
-        //console.log('motoHexString: ' + result);
+        var result = "0x" + this.numberToUInt32Hex(horsepower * 1000) + this.numberToUInt32Hex(weight * 1000) + this.numberToUInt32Hex(topSpeed * 1000) + this.numberToUInt8Hex(vintageGrade) + this.numberToUInt8Hex(techGrade);
+        // console.log('motoHexString: ' + result);
+        return result;
+    };
+    // public motorCycleValuesToStorageString(horsepower: number, weight: number, topSpeed: number,
+    //                                        vintageGrade: number, techGrade: number): string {
+    //   return `${horsepower.toPrecision(2)}👽${weight.toPrecision(2)}👽${topSpeed.toPrecision(2)}👽${vintageGrade}👽${techGrade}`;
+    // }
+    DmdcuApi.prototype.hexStringSliceToInt = function (start, byteSize, hexValue) {
+        var slice = hexValue.slice(start, start + (byteSize * 2));
+        console.log('slice: ' + slice);
+        var result = parseInt(slice, 16);
+        console.log('result: ' + result);
+        return result;
+    };
+    DmdcuApi.prototype.hexStringSliceToUInt32 = function (start, hexValue) {
+        return this.hexStringSliceToInt(start, 4, hexValue);
+    };
+    DmdcuApi.prototype.hexStringSliceToUInt8 = function (start, hexValue) {
+        return this.hexStringSliceToInt(start, 1, hexValue);
+    };
+    DmdcuApi.prototype.convertRawDataToMotoValues = function (rawData) {
+        console.log('RawData: ', rawData);
+        //const bytes = this.web3.utils.hexToBytes(rawData);
+        //console.log('hexToBytes: ', bytes);
+        var horsepower = this.hexStringSliceToUInt32(2, rawData) / 1000;
+        var weight = this.hexStringSliceToUInt32(10, rawData) / 1000;
+        var topSpeed = this.hexStringSliceToUInt32(18, rawData) / 1000;
+        var vintageGrade = this.hexStringSliceToUInt8(26, rawData);
+        var techGrade = this.hexStringSliceToUInt8(28, rawData);
+        var result = { horsepower: horsepower, weight: weight, topSpeed: topSpeed, vintageGrade: vintageGrade, techGrade: techGrade };
+        console.log('motoValues: ', result);
         return result;
     };
     DmdcuApi.prototype.motorCycleValuesToNumberArray = function (horsepower, weight, topSpeed, vintageGrade, techGrade) {
+        // console.log('motorCycleValuesToNumberArray', arguments);
         return this.hexStringToNumberArray(this.motorCycleValuesToHexString(horsepower, weight, topSpeed, vintageGrade, techGrade));
     };
     DmdcuApi.prototype.numberToUInt8Hex = function (val) {
@@ -208,16 +264,17 @@ var DmdcuApi = /** @class */ (function () {
     DmdcuApi.prototype.numberToXByteHex = function (val, x) {
         if (val < 0)
             throw new Error('val need to be positiv');
-        var cleanedNumber = Number.parseInt(val.toString());
+        var cleanedNumber = Number.parseInt(val.toString(), 10);
         var result = cleanedNumber.toString(16);
         if (result.length > (x * 2))
             throw Error("The provided number cant be stored in " + x + " bytes: " + val);
-        while (result.length < x) {
-            result = '0' + result;
+        while (result.length < (x * 2)) {
+            result = "0" + result;
         }
         return result;
     };
     DmdcuApi.prototype.hexStringToNumberArray = function (hexString) {
+        // console.log('hexString: ' + hexString);
         var hexStr = hexString;
         if (hexStr.startsWith('0x')) {
             hexStr = hexStr.substring(2, hexStr.length);

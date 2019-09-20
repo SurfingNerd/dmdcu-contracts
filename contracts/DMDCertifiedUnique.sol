@@ -37,7 +37,7 @@ contract DMDCertifiedUnique is ERC721, Ownable {
         //IPFS Hash with the imageRessources. (to be defined what is expected)
         bytes32 imageRessourcesIPFSAddress;
 
-        uint32 id;
+        uint64 id;
 
         //array index of the last certifer that has modified the asset.
         uint32 certifierID;
@@ -102,7 +102,7 @@ contract DMDCertifiedUnique is ERC721, Ownable {
         return certifiersAddressIndex[msg.sender] != 0;
     }
 
-    function addCertifier(bytes32 name, bytes32 officialID, address mainAddress,bytes32 website, string memory text, bytes32 imageIPFSAddress)
+    function addCertifier(bytes32 name, bytes32 officialID, address mainAddress, bytes32 website, string memory text, bytes32 imageIPFSAddress)
     public
     onlyOwner
     returns (uint256)

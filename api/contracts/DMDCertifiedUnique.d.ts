@@ -31,10 +31,10 @@ export class DMDCertifiedUnique extends Contract {
       name3: string;
       assetPlainText: string;
       imageRessourcesIPFSAddress: string;
-      id: BN;
-      certifierID: BN;
-      assetType: BN;
-      changeDate: BN;
+      id: number;
+      certifierID: number;
+      assetType: number;
+      changeDate: number;
       rawData: string;
       0: string;
       1: string;
@@ -88,10 +88,10 @@ export class DMDCertifiedUnique extends Contract {
       name3: string;
       assetPlainText: string;
       imageRessourcesIPFSAddress: string;
-      id: BN;
-      certifierID: BN;
-      assetType: BN;
-      changeDate: BN;
+      id: number;
+      certifierID: number;
+      assetType: number;
+      changeDate: number;
       rawData: string;
     }>;
 
@@ -163,10 +163,10 @@ export class DMDCertifiedUnique extends Contract {
         name3: string;
         assetPlainText: string;
         imageRessourcesIPFSAddress: string;
-        id: BN;
-        certifierID: BN;
-        assetType: BN;
-        changeDate: BN;
+        id: number;
+        certifierID: number;
+        assetType: number;
+        changeDate: number;
         rawData: string;
       })[]
     >;

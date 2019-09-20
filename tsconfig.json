@@ -6,5 +6,6 @@
   },
   "files": [
     "api/dmdcuApi.ts",
+    "api/dmdcuDataContext.ts"
   ]
 }

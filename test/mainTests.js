@@ -1,7 +1,8 @@
 // import { getLastBlockTimestamp } from './utils.mjs'; // ES6 imports seem still not to be a thing in nodejs
 //const utils = require('./utils');
 
-const dmdcuApi = require('../api/dmdcuApi.js');
+//const dmdcuApi = require('../api/dmdcuApi.js');
+const dmdcuDataContext = require('../api/dmdcuDataContext.js');
 const DMDCertifiedUnique = artifacts.require('DMDCertifiedUnique');
 const BN = web3.utils.BN;
 
@@ -22,6 +23,15 @@ contract('DMDCertifiedUnique', (accounts) => {
 
   let uniquesContract;
   let api;
+  
+  const motoHorsepower = 100; 
+  const motoWeight = 611;
+  const motoTopspeed = 213;
+  const motoVintageGrade = 1;
+  const motoTechGrade = 2;
+  const motoCustomizationGrade = 4;
+
+  let dataContext; 
 
   it('contract deployment', async()=> {
 
@@ -30,8 +40,19 @@ contract('DMDCertifiedUnique', (accounts) => {
     //uniquesContract = (await deployContract("DumbContract")) as DumbContract;
     //console.log('contract address:' + uniquesContract.address);
     //console.log(typeof DMDCertifiedUnique.abi);
-    api = new dmdcuApi.DmdcuApi(web3, DMDCertifiedUnique.abi, uniquesContract.address);
+    dataContext = new dmdcuDataContext.DmdcuDataContext(web3, uniquesContract.address);
+    api = dataContext.api;
 
+  })
+
+  it('user noone tries to add a certifier, and fails as expected', async()=> {
+    try {
+      await api.addNewCertifier(noone, 'certifier2 should fail', 'certifier2 should fail',certifier2, 'www.nomansland.example', 'a second test certifier!', '');
+    } catch (error) {
+      return;
+    }
+
+    throw new Error('addNewCertifier should fail, but it did not.');
   })
 
 
@@ -49,14 +70,14 @@ contract('DMDCertifiedUnique', (accounts) => {
   it('blockservOrganisation adds certifier1', async()=> {
     //console.log(typeof DMDCertifiedUnique.abi);
     //console.log();
-    const result = await api.addNewCertifier(blockservOrganisation, 'certifier1', '001',certifier1, 'www.nomansland.example', 'a test certifier!', '');
+    const result = await api.addNewCertifier(blockservOrganisation, 'TITAN Motorcycles', 'ATU69699506',certifier1, 'https://titan-motorcycles.com', 'a test certifier!', '');
     //console.log('certifier added:');
     //console.log(result);
   })
 
   it('certifier1 tries to add certifier2 but still fails', async()=> {
     try {
-      await api.addNewCertifier(certifier1, 'certifier2', '002',certifier2, 'www.nomansland.example', 'a second test certifier!', '');
+      await api.addNewCertifier(certifier1, 'Monaco  Demo', '002', certifier2, 'https://monacoyachtshow.com', 'Monaco Yachting Show Demo Certifier', '');
     } catch (error) {
       return;
     }
@@ -73,6 +94,16 @@ contract('DMDCertifiedUnique', (accounts) => {
     throw new Error('addNewCertifier should fail, but it did not.');
   })
 
+    
+  it('blockservOrganisation adds monaco Demo Certifier', async()=> {
+    //console.log(typeof DMDCertifiedUnique.abi);
+    //console.log();
+    //const result = await api.addNewCertifier(blockservOrganisation, 'TITAN Motorcycles', 'ATU69699506',certifier1, 'https://titan-motorcycles.com', 'a test certifier!', '');
+    await api.addNewCertifier(blockservOrganisation, 'Monaco  Demo', 'monaco-demo', '0x70A830C7EffF19c9Dd81Db87107f5Ea5804cbb3F', 'https://monacoyachtshow.com', 'Monaco Yachting Show Demo Certifier', '');
+    //console.log('certifier added:');
+    //console.log(result);
+  })
+
   it('blockservs adds motorcycle asset type', async() => {
 
     await api.addNewAssetType(blockservOrganisation, 'motorcycle');
@@ -84,14 +115,12 @@ contract('DMDCertifiedUnique', (accounts) => {
     }
   })
 
-
   async function addNewMoto(certifier) {
     
-    return api.addNewMotorcycle(certifier, 'motorcycle', 'myName1', 'myName2', 'myName3',
+    return api.addNewMotorcycle(certifier, 'myName1', 'myName2', 'myName3',
       'this is worlds first blockchain certified motorcycle', '',
-      Date.now()/1000, 100, 611, 213, 0, 1);
+      Date.now()/1000, motoHorsepower, motoWeight, motoTopspeed, motoVintageGrade, motoTechGrade);
   }
-
 
   it('blockservOrganisation fails creating an motorcycle certificate as expected', async()=> {
 
@@ -106,11 +135,11 @@ contract('DMDCertifiedUnique', (accounts) => {
 
 
 
-  let idFirstMoto;
+  // let idFirstMoto;
 
-  it('certifier1 creates an motorcycle certificate', async()=> {
-    idFirstMoto = await addNewMoto(certifier1);
-  })
+  // it('certifier1 creates an motorcycle certificate', async()=> {
+  //   idFirstMoto = await addNewMoto(certifier1);
+  // })
 
 
   // it('endConsumer2 tries to accept that certificate, but fails', async()=> {
@@ -152,16 +181,16 @@ contract('DMDCertifiedUnique', (accounts) => {
   // })
 
 
-  it('certifier2 fails creating an motorcycle certificate as expected (not whitelisted yet)', async()=> {
+  // it('certifier2 fails creating an motorcycle certificate as expected (not whitelisted yet)', async()=> {
 
-    try{
-      await addNewMoto(certifier2);
-    } catch(error) {
-      return;
-    }
-    throw new Error('addNewCertifier should fail, but it did not.');
+  //   try{
+  //     await addNewMoto(certifier2);
+  //   } catch(error) {
+  //     return;
+  //   }
+  //   throw new Error('addNewCertifier should fail, but it did not.');
 
-  })
+  // })
 
   it('blockservOrganisation whitelists certifier2 and certifier3 as well', async()=> {
     await api.addNewCertifier(blockservOrganisation, 'certifier2', '002',certifier2, 'www.certifier2.example', 'a second test certifier!', '');
@@ -173,11 +202,11 @@ contract('DMDCertifiedUnique', (accounts) => {
 
   it('certifier2 creates moto2, certifier3 creates moto3', async()=> {
 
-    moto2 = api.addNewMotorcycle(certifier2, 'motorcycle', 'moto2', 'tha moto 2', 'm2',
+    moto2 = api.addNewMotorcycle(certifier2, 'moto2', 'tha moto 2', 'm2',
       'this is worlds second blockchain certified motorcycle', '',
       Date.now()/1000, 86, 552, 194, 0, 1);
 
-    moto3 = api.addNewMotorcycle(certifier3, 'motorcycle', 'moto3', 'tha moto 3', 'm3',
+    moto3 = api.addNewMotorcycle(certifier3, 'moto3', 'tha moto 3', 'm3',
       'this is worlds third blockchain certified motorcycle', '',
       Date.now()/1000, 99, 445, 181, 0, 1);
 
@@ -201,9 +230,9 @@ contract('DMDCertifiedUnique', (accounts) => {
 
   it('query all available assets.', async()=> {
 
-    const allUniques = await api.getAllUniques();
+    //const allUniques = await api.getAllUniques();
 
-    //console.log('2:' ,await api.getUnique(2));
+    //console.log('2:' ,await api.getUnique(1));
     //console.log('3:' ,await api.getUnique(3));
 
     //console.log('All Uniques:', allUniques);

@@ -78,7 +78,7 @@ var DmdcuApi = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             var motorcylceValues;
             return __generator(this, function (_a) {
-                motorcylceValues = this.motorCycleValuesToNumberArray(horsepower, weight, topSpeed, vintageGrade, techGrade);
+                motorcylceValues = this.motorCycleValuesToHexString(horsepower, weight, topSpeed, vintageGrade, techGrade);
                 return [2 /*return*/, this.addNewAsset(web3account, 'motorcycle', name, name2, name3, assetPlainText, imageRessourcesIPFSAddress, changeDateInLinuxTime, motorcylceValues)];
             });
         });
@@ -209,7 +209,7 @@ var DmdcuApi = /** @class */ (function () {
         //     //2: state of the art high end technology
         // uint8[] dataTechGrade;
         var result = "0x" + this.numberToUInt32Hex(horsepower * 1000) + this.numberToUInt32Hex(weight * 1000) + this.numberToUInt32Hex(topSpeed * 1000) + this.numberToUInt8Hex(vintageGrade) + this.numberToUInt8Hex(techGrade);
-        // console.log('motoHexString: ' + result);
+        console.log('motoHexString: ' + result);
         return result;
     };
     // public motorCycleValuesToStorageString(horsepower: number, weight: number, topSpeed: number,

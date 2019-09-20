@@ -44,14 +44,15 @@ export class DmdcuApi {
     changeDateInLinuxTime: number, horsepower: number, weight: number, topSpeed: number,
     vintageGrade: number, techGrade: number): Promise<BN> {
 
-    const motorcylceValues = this.motorCycleValuesToNumberArray(horsepower, weight, topSpeed, vintageGrade, techGrade);
+    //this.motorCycleValuesToNumberArray(horsepower, weight, topSpeed, vintageGrade, techGrade);
+    const motorcylceValues = this.motorCycleValuesToHexString(horsepower, weight, topSpeed, vintageGrade, techGrade); //
     return this.addNewAsset(web3account, 'motorcycle', name, name2, name3, assetPlainText, imageRessourcesIPFSAddress,
       changeDateInLinuxTime, motorcylceValues);
   }
 
   public async addNewAsset(web3account: string, assetType: string, name: string, name2: string, name3: string,
     assetPlainText: string, imageRessourcesIPFSAddress,
-    changeDateInLinuxTime: number, rawData: number[]): Promise<BN> {
+    changeDateInLinuxTime: number, rawData: string): Promise<BN> {
 
     //console.log('rawDataHexString: ' + rawDataHexString);
     //const assetTypeID = await this.getIndexOfAssetType(assetType);
@@ -151,7 +152,7 @@ export class DmdcuApi {
     // uint8[] dataTechGrade;
 
     let result = `0x${this.numberToUInt32Hex(horsepower * 1000)}${this.numberToUInt32Hex(weight * 1000)}${this.numberToUInt32Hex(topSpeed * 1000)}${this.numberToUInt8Hex(vintageGrade)}${this.numberToUInt8Hex(techGrade)}`;
-    // console.log('motoHexString: ' + result);
+    console.log('motoHexString: ' + result);
     return result;
   }
 

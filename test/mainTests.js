@@ -7,6 +7,13 @@ const DMDCertifiedUnique = artifacts.require('DMDCertifiedUnique');
 const BN = web3.utils.BN;
 
 
+function expect(condition, errorMessage) {
+  if (!condition) {
+    throw new Error(errorMessage);
+  }
+}
+
+
 contract('DMDCertifiedUnique', (accounts) => {
   console.log(`Accounts: ${accounts}`);
 
@@ -130,67 +137,10 @@ contract('DMDCertifiedUnique', (accounts) => {
       return;
     }
     throw new Error('addNewCertifier should fail, but it did not.');
-
   })
 
 
 
-  // let idFirstMoto;
-
-  // it('certifier1 creates an motorcycle certificate', async()=> {
-  //   idFirstMoto = await addNewMoto(certifier1);
-  // })
-
-
-  // it('endConsumer2 tries to accept that certificate, but fails', async()=> {
-
-  //   try{
-  //     await api.acceptNewUniqueAsset(endConsumer2, idFirstMoto);
-  //   } catch(error) {
-  //     return;
-  //   }
-  //   throw new Error('acceptNewUniqueAsset should fail, but it dit not.');
-  // })
-
-
-
-  // it('certifier1 tries to accepts that certificate, but fails', async()=> {
-
-  //   try{
-  //     await api.acceptNewUniqueAsset(certifier1, idFirstMoto);
-  //   } catch(error) {
-  //     return;
-  //   }
-  //   throw new Error('acceptNewUniqueAsset should fail, but it dit not.');
-  // })
-
-  // it('endConsumer1 accepts fantasy number certificate, but fails.', async()=> {
-  //   try{
-  //     await api.acceptNewUniqueAsset(endConsumer1, new BN('0x3dbf9d2e186dabe6922c32b02a290105b0cd4ff00cf6fc076a6a24f61c3fe498', 'hex'));
-  //   } catch(error) {
-  //     return;
-  //   }
-  //   throw new Error('acceptNewUniqueAsset should fail, but it dit not.');
-  // })
-
-
-
-  // it('endConsumer1 accepts that certificate', async()=> {
-
-  //   await api.acceptNewUniqueAsset(endConsumer1,  new BN(idFirstMoto, 'hex'));
-  // })
-
-
-  // it('certifier2 fails creating an motorcycle certificate as expected (not whitelisted yet)', async()=> {
-
-  //   try{
-  //     await addNewMoto(certifier2);
-  //   } catch(error) {
-  //     return;
-  //   }
-  //   throw new Error('addNewCertifier should fail, but it did not.');
-
-  // })
 
   it('blockservOrganisation whitelists certifier2 and certifier3 as well', async()=> {
     await api.addNewCertifier(blockservOrganisation, 'certifier2', '002',certifier2, 'www.certifier2.example', 'a second test certifier!', '');
@@ -200,15 +150,29 @@ contract('DMDCertifiedUnique', (accounts) => {
   let moto2;
   let moto3;
 
-  it('certifier2 creates moto2, certifier3 creates moto3', async()=> {
+  it('certifier2 creates moto2, certifier3 creates moto3 and the values match the exptected ones', async()=> {
 
-    moto2 = api.addNewMotorcycle(certifier2, 'moto2', 'tha moto 2', 'm2',
+    moto2BN = await api.addNewMotorcycle(certifier2, 'moto2', 'tha moto 2', 'm2',
       'this is worlds second blockchain certified motorcycle', '',
-      Date.now()/1000, 86, 552, 194, 0, 1);
+      Date.now()/1000, motoHorsepower, motoWeight, motoTopspeed, motoVintageGrade, motoTechGrade);
 
-    moto3 = api.addNewMotorcycle(certifier3, 'moto3', 'tha moto 3', 'm3',
+    moto3BN = await api.addNewMotorcycle(certifier3, 'moto3', 'tha moto 3', 'm3',
       'this is worlds third blockchain certified motorcycle', '',
       Date.now()/1000, 99, 445, 181, 0, 1);
+
+      const moto2 = await dataContext.getUniqueMotorcycle(moto2BN.toNumber());
+
+      console.log('moto2: ', moto2);
+      //expect()
+      expect(moto2.horsepower === motoHorsepower, 'correct horsepower');
+      expect(moto2.weight === motoWeight, 'correct weight');
+      expect(moto2.topSpeed === motoTopspeed, 'correct topspeed');
+      expect(moto2.vintageGrade  === motoVintageGrade, 'correct vintageGrade');
+      expect(moto2.techGrade   === motoTechGrade, 'correct customizationGrade');
+      // expect(moto2.motoCustomizationGrade   === motoCustomizationGrade, 'correct customizationGrade');
+      //console.log('moto3: ', moto3);
+
+    
 
   })
 
@@ -232,7 +196,7 @@ contract('DMDCertifiedUnique', (accounts) => {
 
     //const allUniques = await api.getAllUniques();
 
-    //console.log('2:' ,await api.getUnique(1));
+    console.log('2:' ,await api.getUnique(1));
     //console.log('3:' ,await api.getUnique(3));
 
     //console.log('All Uniques:', allUniques);

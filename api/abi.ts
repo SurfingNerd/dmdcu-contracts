@@ -143,10 +143,6 @@ export function getAbiJson() : any[] {
           "type": "bytes32"
         },
         {
-          "name": "name3",
-          "type": "bytes32"
-        },
-        {
           "name": "assetPlainText",
           "type": "string"
         },
@@ -156,7 +152,7 @@ export function getAbiJson() : any[] {
         },
         {
           "name": "id",
-          "type": "uint32"
+          "type": "uint64"
         },
         {
           "name": "certifierID",
@@ -167,8 +163,16 @@ export function getAbiJson() : any[] {
           "type": "uint16"
         },
         {
+          "name": "buildDate",
+          "type": "uint64"
+        },
+        {
           "name": "changeDate",
           "type": "uint64"
+        },
+        {
+          "name": "customizationGrade",
+          "type": "uint8"
         },
         {
           "name": "rawData",
@@ -500,10 +504,6 @@ export function getAbiJson() : any[] {
               "type": "bytes32"
             },
             {
-              "name": "name3",
-              "type": "bytes32"
-            },
-            {
               "name": "assetPlainText",
               "type": "string"
             },
@@ -513,7 +513,7 @@ export function getAbiJson() : any[] {
             },
             {
               "name": "id",
-              "type": "uint32"
+              "type": "uint64"
             },
             {
               "name": "certifierID",
@@ -524,8 +524,16 @@ export function getAbiJson() : any[] {
               "type": "uint16"
             },
             {
+              "name": "buildDate",
+              "type": "uint64"
+            },
+            {
               "name": "changeDate",
               "type": "uint64"
+            },
+            {
+              "name": "customizationGrade",
+              "type": "uint8"
             },
             {
               "name": "rawData",
@@ -544,15 +552,65 @@ export function getAbiJson() : any[] {
       "constant": true,
       "inputs": [
         {
-          "name": "index",
-          "type": "uint256"
+          "name": "id",
+          "type": "uint32"
         }
       ],
       "name": "getUnique",
       "outputs": [
         {
+          "components": [
+            {
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "name": "name",
+              "type": "bytes32"
+            },
+            {
+              "name": "name2",
+              "type": "bytes32"
+            },
+            {
+              "name": "assetPlainText",
+              "type": "string"
+            },
+            {
+              "name": "imageRessourcesIPFSAddress",
+              "type": "bytes32"
+            },
+            {
+              "name": "id",
+              "type": "uint64"
+            },
+            {
+              "name": "certifierID",
+              "type": "uint32"
+            },
+            {
+              "name": "assetType",
+              "type": "uint16"
+            },
+            {
+              "name": "buildDate",
+              "type": "uint64"
+            },
+            {
+              "name": "changeDate",
+              "type": "uint64"
+            },
+            {
+              "name": "customizationGrade",
+              "type": "uint8"
+            },
+            {
+              "name": "rawData",
+              "type": "bytes"
+            }
+          ],
           "name": "",
-          "type": "bytes32"
+          "type": "tuple"
         }
       ],
       "payable": false,
@@ -666,10 +724,6 @@ export function getAbiJson() : any[] {
           "type": "bytes32"
         },
         {
-          "name": "name3",
-          "type": "bytes32"
-        },
-        {
           "name": "assetPlainText",
           "type": "string"
         },
@@ -678,8 +732,16 @@ export function getAbiJson() : any[] {
           "type": "bytes32"
         },
         {
+          "name": "buildDate",
+          "type": "uint64"
+        },
+        {
           "name": "changeDate",
           "type": "uint64"
+        },
+        {
+          "name": "customizationGrade",
+          "type": "uint8"
         },
         {
           "name": "rawData",
@@ -714,10 +776,6 @@ export function getAbiJson() : any[] {
         },
         {
           "name": "name2",
-          "type": "bytes32"
-        },
-        {
-          "name": "name3",
           "type": "bytes32"
         },
         {

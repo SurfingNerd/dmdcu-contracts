@@ -15,16 +15,16 @@ interface IDmdcuRawUnique {
   owner: string;
   name: string;
   name2: string;
-  name3: string;
   assetPlainText: string;
   imageRessourcesIPFSAddress: string;
   id: number;
   certifierID: number;
   assetType: number;
+  buildDate: number;
   changeDate: number;
+  customizationGrade: number;
   rawData: string;
 }
-
 
 export class DmdcuDataContext {
 
@@ -65,10 +65,14 @@ export class DmdcuDataContext {
     const topSpeed = motoValues.topSpeed;
     const vintageGrade = motoValues.vintageGrade;
     const techGrade = motoValues.techGrade;
-    // TODO: need field for customization grade.
-    const customizationGrade = 2;
+    
+    // Typechain says that customizationGrade is a number field, but web3 in fact returns a 
+    const customizationGrade = parseInt(x.customizationGrade.toString());
 
-    return new UniqMotorcycle(x.id, x.owner, this.hexStringToUtf8Text(x.name), this.hexStringToUtf8Text(x.name2), this.hexStringToUtf8Text(x.name3), x.assetPlainText, x.imageRessourcesIPFSAddress, certifier, x.assetType, new Date(x.changeDate * 1000), horsepower, weight, topSpeed, customizationGrade, vintageGrade, techGrade);
+    console.error('customizationGrade:' + customizationGrade);
+    console.error('customizationGrade Type:' + typeof customizationGrade);
+
+    return new UniqMotorcycle(x.id, x.owner, this.hexStringToUtf8Text(x.name), this.hexStringToUtf8Text(x.name2), x.assetPlainText, x.imageRessourcesIPFSAddress, certifier, x.assetType, new Date(x.buildDate  * 1000),  new Date(x.changeDate * 1000), customizationGrade, horsepower, weight, topSpeed, vintageGrade, techGrade);
   }
 
   public async getAllUniqueMotorcycles(forceRefresh: boolean = false) : Promise<UniqMotorcycle[]> {
@@ -138,7 +142,7 @@ export class DmdcuDataContext {
   }
 
   public async addMotoToBlockchain(moto: UniqMotorcycle) : Promise<BN> {
-    const motoID = await this.api.addNewMotorcycle(this.api.web3.eth.defaultAccount, moto.name, moto.name2, moto.name3, moto.assetPlainText, moto.imageRessourcesIPFSAddress, (+(moto.changeDate) / 1000), moto.horsepower, moto.weight, moto.topSpeed, moto.vintageGrade, moto.techGrade);
+    const motoID = await this.api.addNewMotorcycle(this.api.web3.eth.defaultAccount, moto.name, moto.name2, moto.assetPlainText, moto.imageRessourcesIPFSAddress, (+(moto.buildDate) / 1000), (+(moto.changeDate) / 1000), moto.customizationGrade,  moto.horsepower, moto.weight, moto.topSpeed, moto.vintageGrade, moto.techGrade);
     const allMotorCycles = await this.getAllUniqueMotorcycles(true);
     return motoID;
     // this.getUniqueMotorcycle(motoID.toNumber());

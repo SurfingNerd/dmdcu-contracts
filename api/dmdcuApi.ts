@@ -39,20 +39,19 @@ export class DmdcuApi {
     return this.contract.methods.addCertifier(certifierNameHex, officialIDHex, mainAddress, websiteHex, text, imageIPFSAddressHex).send({ gas: '0x100000', from: fromAccount });
   }
 
-  public async addNewMotorcycle(web3account: string, name: string, name2: string, name3: string,
+  public async addNewMotorcycle(web3account: string, name: string, name2: string,
     assetPlainText: string, imageRessourcesIPFSAddress,
-    changeDateInLinuxTime: number, horsepower: number, weight: number, topSpeed: number,
+    buildDateInLinuxTime: number, changeDateInLinuxTime: number, customizationGrade: number, horsepower: number, weight: number, topSpeed: number,
     vintageGrade: number, techGrade: number): Promise<BN> {
 
     //this.motorCycleValuesToNumberArray(horsepower, weight, topSpeed, vintageGrade, techGrade);
     const motorcylceValues = this.motorCycleValuesToHexString(horsepower, weight, topSpeed, vintageGrade, techGrade); //
-    return this.addNewAsset(web3account, 'motorcycle', name, name2, name3, assetPlainText, imageRessourcesIPFSAddress,
-      changeDateInLinuxTime, motorcylceValues);
+    return this.addNewAsset(web3account, 'motorcycle', name, name2, assetPlainText, imageRessourcesIPFSAddress,
+      buildDateInLinuxTime, changeDateInLinuxTime, customizationGrade, motorcylceValues);
   }
 
-  public async addNewAsset(web3account: string, assetType: string, name: string, name2: string, name3: string,
-    assetPlainText: string, imageRessourcesIPFSAddress,
-    changeDateInLinuxTime: number, rawData: string): Promise<BN> {
+  public async addNewAsset(web3account: string, assetType: string, name: string, name2: string, assetPlainText: string, imageRessourcesIPFSAddress,
+    buildDateInLinuxTime: number, changeDateInLinuxTime: number, customizationGrade: number, rawData: string): Promise<BN> {
 
     //console.log('rawDataHexString: ' + rawDataHexString);
     //const assetTypeID = await this.getIndexOfAssetType(assetType);
@@ -63,7 +62,7 @@ export class DmdcuApi {
       throw Error(`AssetType ${assetType} is not known to this contract. add it first with addNewAssetType.`);
     }
 
-    const result = await this.contract.methods.addNewAsset(assetTypeID, this.toBytes32String(name), this.toBytes32String(name2), this.toBytes32String(name3), assetPlainText, this.toBytes32String(imageRessourcesIPFSAddress), '0x' + this.numberToUInt64Hex(changeDateInLinuxTime), rawData).send({ gas: '0x100000', from: web3account });
+    const result = await this.contract.methods.addNewAsset(assetTypeID, this.toBytes32String(name), this.toBytes32String(name2), assetPlainText, this.toBytes32String(imageRessourcesIPFSAddress), '0x' + this.numberToUInt64Hex(buildDateInLinuxTime), '0x' + this.numberToUInt64Hex(changeDateInLinuxTime), '0x' + this.numberTo8ByteHex(customizationGrade), rawData).send({ gas: '0x100000', from: web3account });
 
     const txReceipt = await this.web3.eth.getTransactionReceipt(result.transactionHash);
     const pastEventsOfContract = await this.contractJs.getPastEvents("Transfer", { fromBlock: txReceipt.blockNumber, toBlock: txReceipt.blockNumber });
@@ -152,7 +151,7 @@ export class DmdcuApi {
     // uint8[] dataTechGrade;
 
     let result = `0x${this.numberToUInt32Hex(horsepower * 1000)}${this.numberToUInt32Hex(weight * 1000)}${this.numberToUInt32Hex(topSpeed * 1000)}${this.numberToUInt8Hex(vintageGrade)}${this.numberToUInt8Hex(techGrade)}`;
-    console.log('motoHexString: ' + result);
+    // console.log('motoHexString: ' + result);
     return result;
   }
 
@@ -164,9 +163,9 @@ export class DmdcuApi {
   private hexStringSliceToInt(start: number, byteSize: number, hexValue: string) : number {
 
     const slice = hexValue.slice(start, start + (byteSize * 2));
-    console.log('slice: '  + slice);
+    // console.log('slice: '  + slice);
     const result = parseInt(slice, 16);
-    console.log('result: ' + result);
+    // console.log('result: ' + result);
     return result; 
   }
 

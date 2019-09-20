@@ -27,11 +27,13 @@ contract DMDCertifiedUnique is ERC721, Ownable {
     }
 
     struct UniqueAsset {
-        
+
         address owner;
+
         bytes32 name;
+
         bytes32 name2;
-        bytes32 name3;
+
         string  assetPlainText;
 
         //IPFS Hash with the imageRessources. (to be defined what is expected)
@@ -45,7 +47,12 @@ contract DMDCertifiedUnique is ERC721, Ownable {
         uint16 assetType;
 
         //modification time: unix time with 64 bit to bypass Y2038 problem (https://en.wikipedia.org/wiki/Unix_time https://en.wikipedia.org/wiki/Year_2038_problem)
+        uint64 buildDate;
+
+        //modification time: unix time with 64 bit to bypass Y2038 problem (https://en.wikipedia.org/wiki/Unix_time https://en.wikipedia.org/wiki/Year_2038_problem)
         uint64 changeDate;
+
+        uint8  customizationGrade;
 
         bytes rawData;
     }
@@ -95,7 +102,7 @@ contract DMDCertifiedUnique is ERC721, Ownable {
     public
     view
     returns (bool) {
-        
+
         //uint32 certifierID = certifiersAddressIndex[certifierAddress];
         //require(certifiers[certifierID] == certifierAddress, 'given certifierAddress is not a known certifier.');
 
@@ -132,9 +139,9 @@ contract DMDCertifiedUnique is ERC721, Ownable {
         return certifierID;
     }
 
-    function addNewAsset(uint16 assetType, bytes32 name, bytes32 name2, bytes32 name3,
+    function addNewAsset(uint16 assetType, bytes32 name, bytes32 name2,
         string memory assetPlainText, bytes32 imageRessourcesIPFSAddress,
-        uint64 changeDate, bytes memory rawData)
+        uint64 buildDate, uint64 changeDate, uint8  customizationGrade, bytes memory rawData)
     public
     onlyCertifier
     returns (uint256) {
@@ -151,14 +158,14 @@ contract DMDCertifiedUnique is ERC721, Ownable {
         //todo: add plausibility check of changeDate.
         super._mint(msg.sender, id);
 
-        uniques.push(UniqueAsset(msg.sender, name, name2, name3, assetPlainText, imageRessourcesIPFSAddress,(uint32)(id),
-            certifierID, assetType, changeDate, rawData));
+        uniques.push(UniqueAsset(msg.sender, name, name2, assetPlainText, imageRessourcesIPFSAddress,(uint32)(id),
+            certifierID, assetType, buildDate, changeDate, customizationGrade, rawData));
 
         return id;
         //return 0;
     }
 
-    function modifyAsset(uint32 assetID, uint16 assetType, bytes32 name, bytes32 name2, bytes32 name3,
+    function modifyAsset(uint32 assetID, uint16 assetType, bytes32 name, bytes32 name2,
         string memory assetPlainText, bytes32 imageRessourcesIPFSAddress,
         uint64 changeDate, bytes memory rawData)
     public
@@ -177,7 +184,7 @@ contract DMDCertifiedUnique is ERC721, Ownable {
         asset.assetType = assetType;
         asset.name = name;
         asset.name2 = name2;
-        asset.name3 = name3;
+
         asset.assetPlainText = assetPlainText;
         asset.imageRessourcesIPFSAddress = imageRessourcesIPFSAddress;
         asset.certifierID = certifierID;

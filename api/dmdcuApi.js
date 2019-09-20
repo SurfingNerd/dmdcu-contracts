@@ -74,16 +74,16 @@ var DmdcuApi = /** @class */ (function () {
             });
         });
     };
-    DmdcuApi.prototype.addNewMotorcycle = function (web3account, name, name2, name3, assetPlainText, imageRessourcesIPFSAddress, changeDateInLinuxTime, horsepower, weight, topSpeed, vintageGrade, techGrade) {
+    DmdcuApi.prototype.addNewMotorcycle = function (web3account, name, name2, assetPlainText, imageRessourcesIPFSAddress, buildDateInLinuxTime, changeDateInLinuxTime, customizationGrade, horsepower, weight, topSpeed, vintageGrade, techGrade) {
         return __awaiter(this, void 0, void 0, function () {
             var motorcylceValues;
             return __generator(this, function (_a) {
                 motorcylceValues = this.motorCycleValuesToHexString(horsepower, weight, topSpeed, vintageGrade, techGrade);
-                return [2 /*return*/, this.addNewAsset(web3account, 'motorcycle', name, name2, name3, assetPlainText, imageRessourcesIPFSAddress, changeDateInLinuxTime, motorcylceValues)];
+                return [2 /*return*/, this.addNewAsset(web3account, 'motorcycle', name, name2, assetPlainText, imageRessourcesIPFSAddress, buildDateInLinuxTime, changeDateInLinuxTime, customizationGrade, motorcylceValues)];
             });
         });
     };
-    DmdcuApi.prototype.addNewAsset = function (web3account, assetType, name, name2, name3, assetPlainText, imageRessourcesIPFSAddress, changeDateInLinuxTime, rawData) {
+    DmdcuApi.prototype.addNewAsset = function (web3account, assetType, name, name2, assetPlainText, imageRessourcesIPFSAddress, buildDateInLinuxTime, changeDateInLinuxTime, customizationGrade, rawData) {
         return __awaiter(this, void 0, void 0, function () {
             var allAssetTypes, assetTypeID, result, txReceipt, pastEventsOfContract, idUniqueAssetCreated, i, event_1, rawNewID;
             return __generator(this, function (_a) {
@@ -95,7 +95,7 @@ var DmdcuApi = /** @class */ (function () {
                         if (assetTypeID < 0) {
                             throw Error("AssetType " + assetType + " is not known to this contract. add it first with addNewAssetType.");
                         }
-                        return [4 /*yield*/, this.contract.methods.addNewAsset(assetTypeID, this.toBytes32String(name), this.toBytes32String(name2), this.toBytes32String(name3), assetPlainText, this.toBytes32String(imageRessourcesIPFSAddress), '0x' + this.numberToUInt64Hex(changeDateInLinuxTime), rawData).send({ gas: '0x100000', from: web3account })];
+                        return [4 /*yield*/, this.contract.methods.addNewAsset(assetTypeID, this.toBytes32String(name), this.toBytes32String(name2), assetPlainText, this.toBytes32String(imageRessourcesIPFSAddress), '0x' + this.numberToUInt64Hex(buildDateInLinuxTime), '0x' + this.numberToUInt64Hex(changeDateInLinuxTime), '0x' + this.numberTo8ByteHex(customizationGrade), rawData).send({ gas: '0x100000', from: web3account })];
                     case 2:
                         result = _a.sent();
                         return [4 /*yield*/, this.web3.eth.getTransactionReceipt(result.transactionHash)];
@@ -209,7 +209,7 @@ var DmdcuApi = /** @class */ (function () {
         //     //2: state of the art high end technology
         // uint8[] dataTechGrade;
         var result = "0x" + this.numberToUInt32Hex(horsepower * 1000) + this.numberToUInt32Hex(weight * 1000) + this.numberToUInt32Hex(topSpeed * 1000) + this.numberToUInt8Hex(vintageGrade) + this.numberToUInt8Hex(techGrade);
-        console.log('motoHexString: ' + result);
+        // console.log('motoHexString: ' + result);
         return result;
     };
     // public motorCycleValuesToStorageString(horsepower: number, weight: number, topSpeed: number,
@@ -218,9 +218,9 @@ var DmdcuApi = /** @class */ (function () {
     // }
     DmdcuApi.prototype.hexStringSliceToInt = function (start, byteSize, hexValue) {
         var slice = hexValue.slice(start, start + (byteSize * 2));
-        console.log('slice: ' + slice);
+        // console.log('slice: '  + slice);
         var result = parseInt(slice, 16);
-        console.log('result: ' + result);
+        // console.log('result: ' + result);
         return result;
     };
     DmdcuApi.prototype.hexStringSliceToUInt32 = function (start, hexValue) {

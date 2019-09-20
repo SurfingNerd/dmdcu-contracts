@@ -28,25 +28,27 @@ export class DMDCertifiedUnique extends Contract {
       owner: string;
       name: string;
       name2: string;
-      name3: string;
       assetPlainText: string;
       imageRessourcesIPFSAddress: string;
       id: number;
       certifierID: number;
       assetType: number;
+      buildDate: number;
       changeDate: number;
+      customizationGrade: number;
       rawData: string;
       0: string;
       1: string;
       2: string;
       3: string;
       4: string;
-      5: string;
-      6: BN;
-      7: BN;
-      8: BN;
-      9: BN;
-      10: string;
+      5: number;
+      6: number;
+      7: number;
+      8: number;
+      9: number;
+      10: number;
+      11: string;
     }>;
 
     ownerOf(tokenId: number | string): TransactionObject<string>;
@@ -85,13 +87,14 @@ export class DMDCertifiedUnique extends Contract {
       owner: string;
       name: string;
       name2: string;
-      name3: string;
       assetPlainText: string;
       imageRessourcesIPFSAddress: string;
       id: number;
       certifierID: number;
       assetType: number;
+      buildDate: number;
       changeDate: number;
+      customizationGrade: number;
       rawData: string;
     }>;
 
@@ -134,10 +137,11 @@ export class DMDCertifiedUnique extends Contract {
       assetType: number | string,
       name: string | number[],
       name2: string | number[],
-      name3: string | number[],
       assetPlainText: string,
       imageRessourcesIPFSAddress: string | number[],
+      buildDate: number | string,
       changeDate: number | string,
+      customizationGrade: number | string,
       rawData: string | number[]
     ): TransactionObject<BN>;
 
@@ -146,7 +150,6 @@ export class DMDCertifiedUnique extends Contract {
       assetType: number | string,
       name: string | number[],
       name2: string | number[],
-      name3: string | number[],
       assetPlainText: string,
       imageRessourcesIPFSAddress: string | number[],
       changeDate: number | string,
@@ -160,13 +163,14 @@ export class DMDCertifiedUnique extends Contract {
         owner: string;
         name: string;
         name2: string;
-        name3: string;
         assetPlainText: string;
         imageRessourcesIPFSAddress: string;
         id: number;
         certifierID: number;
         assetType: number;
+        buildDate: number;
         changeDate: number;
+        customizationGrade: number;
         rawData: string;
       })[]
     >;

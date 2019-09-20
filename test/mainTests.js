@@ -37,6 +37,7 @@ contract('DMDCertifiedUnique', (accounts) => {
   const motoVintageGrade = 1;
   const motoTechGrade = 2;
   const motoCustomizationGrade = 4;
+  const motoBuildDate = new Date(2001, 3) / 1000;
 
   let dataContext; 
 
@@ -124,9 +125,9 @@ contract('DMDCertifiedUnique', (accounts) => {
 
   async function addNewMoto(certifier) {
     
-    return api.addNewMotorcycle(certifier, 'myName1', 'myName2', 'myName3',
-      'this is worlds first blockchain certified motorcycle', '',
-      Date.now()/1000, motoHorsepower, motoWeight, motoTopspeed, motoVintageGrade, motoTechGrade);
+    return api.addNewMotorcycle(certifier, 'myName1', 'myName2',
+      'this is worlds first blockchain certified motorcycle', '', motoBuildDate,
+      Date.now()/1000,motoCustomizationGrade, motoHorsepower, motoWeight, motoTopspeed, motoVintageGrade, motoTechGrade);
   }
 
   it('blockservOrganisation fails creating an motorcycle certificate as expected', async()=> {
@@ -152,24 +153,23 @@ contract('DMDCertifiedUnique', (accounts) => {
 
   it('certifier2 creates moto2, certifier3 creates moto3 and the values match the exptected ones', async()=> {
 
-    moto2BN = await api.addNewMotorcycle(certifier2, 'moto2', 'tha moto 2', 'm2',
+    moto2BN = await api.addNewMotorcycle(certifier2, 'moto2', 'tha moto 2',
       'this is worlds second blockchain certified motorcycle', '',
-      Date.now()/1000, motoHorsepower, motoWeight, motoTopspeed, motoVintageGrade, motoTechGrade);
+      motoBuildDate, Date.now()/1000, motoCustomizationGrade, motoHorsepower, motoWeight, motoTopspeed, motoVintageGrade, motoTechGrade);
 
-    moto3BN = await api.addNewMotorcycle(certifier3, 'moto3', 'tha moto 3', 'm3',
+    moto3BN = await api.addNewMotorcycle(certifier3, 'moto3', 'tha moto 3', 
       'this is worlds third blockchain certified motorcycle', '',
-      Date.now()/1000, 99, 445, 181, 0, 1);
+      motoBuildDate, Date.now()/1000, motoCustomizationGrade, 99, 445, 181, 0, 1);
 
       const moto2 = await dataContext.getUniqueMotorcycle(moto2BN.toNumber());
-
-      console.log('moto2: ', moto2);
+      //console.log('moto2: ', moto2);
       //expect()
       expect(moto2.horsepower === motoHorsepower, 'correct horsepower');
       expect(moto2.weight === motoWeight, 'correct weight');
       expect(moto2.topSpeed === motoTopspeed, 'correct topspeed');
       expect(moto2.vintageGrade  === motoVintageGrade, 'correct vintageGrade');
-      expect(moto2.techGrade   === motoTechGrade, 'correct customizationGrade');
-      // expect(moto2.motoCustomizationGrade   === motoCustomizationGrade, 'correct customizationGrade');
+      expect(moto2.techGrade   === motoTechGrade, 'correct techGrade');
+      expect(moto2.customizationGrade   === motoCustomizationGrade, 'correct customizationGrade');
       //console.log('moto3: ', moto3);
 
     
@@ -194,9 +194,9 @@ contract('DMDCertifiedUnique', (accounts) => {
 
   it('query all available assets.', async()=> {
 
-    //const allUniques = await api.getAllUniques();
+    const allUniques = await api.getAllUniques();
 
-    console.log('2:' ,await api.getUnique(1));
+    //console.log('2:' ,await api.getUnique(1));
     //console.log('3:' ,await api.getUnique(3));
 
     //console.log('All Uniques:', allUniques);

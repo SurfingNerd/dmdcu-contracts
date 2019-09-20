@@ -13,17 +13,18 @@ var Certifier = /** @class */ (function () {
 }());
 exports.Certifier = Certifier;
 var UndefinedUniqAsset = /** @class */ (function () {
-    function UndefinedUniqAsset(id, owner, name, name2, name3, assetPlainText, imageRessourcesIPFSAddress, certifier, assetType, changeDate, rawData) {
+    function UndefinedUniqAsset(id, owner, name, name2, assetPlainText, imageRessourcesIPFSAddress, certifier, assetType, buildDate, changeDate, customizationGrade, rawData) {
         this.id = id;
         this.owner = owner;
         this.name = name;
         this.name2 = name2;
-        this.name3 = name3;
         this.assetPlainText = assetPlainText;
         this.imageRessourcesIPFSAddress = imageRessourcesIPFSAddress;
         this.certifier = certifier;
         this.assetType = assetType;
+        this.buildDate = buildDate;
         this.changeDate = changeDate;
+        this.customizationGrade = customizationGrade;
         this.rawData = rawData;
     }
     return UndefinedUniqAsset;
@@ -31,21 +32,21 @@ var UndefinedUniqAsset = /** @class */ (function () {
 exports.UndefinedUniqAsset = UndefinedUniqAsset;
 var UniqMotorcycle = /** @class */ (function () {
     // const result = `0x${this.numberToUInt32Hex(horsepower * 1000)}${this.numberToUInt32Hex(weight * 1000)}${this.numberToUInt32Hex(topSpeed * 1000)}${this.numberToUInt8Hex(vintageGrade)}${this.numberTo8ByteHex(techGrade)}`;
-    function UniqMotorcycle(id, owner, name, name2, name3, assetPlainText, imageRessourcesIPFSAddress, certifier, assetType, changeDate, horsepower, weight, topSpeed, customizationGrade, vintageGrade, techGrade) {
+    function UniqMotorcycle(id, owner, name, name2, assetPlainText, imageRessourcesIPFSAddress, certifier, assetType, buildDate, changeDate, customizationGrade, horsepower, weight, topSpeed, vintageGrade, techGrade) {
         this.id = id;
         this.owner = owner;
         this.name = name;
         this.name2 = name2;
-        this.name3 = name3;
         this.assetPlainText = assetPlainText;
         this.imageRessourcesIPFSAddress = imageRessourcesIPFSAddress;
         this.certifier = certifier;
         this.assetType = assetType;
+        this.buildDate = buildDate;
         this.changeDate = changeDate;
+        this.customizationGrade = customizationGrade;
         this.horsepower = horsepower;
         this.weight = weight;
         this.topSpeed = topSpeed;
-        this.customizationGrade = customizationGrade;
         this.vintageGrade = vintageGrade;
         this.techGrade = techGrade;
     }

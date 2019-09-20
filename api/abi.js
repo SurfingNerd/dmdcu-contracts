@@ -144,10 +144,6 @@ function getAbiJson() {
                     "type": "bytes32"
                 },
                 {
-                    "name": "name3",
-                    "type": "bytes32"
-                },
-                {
                     "name": "assetPlainText",
                     "type": "string"
                 },
@@ -157,7 +153,7 @@ function getAbiJson() {
                 },
                 {
                     "name": "id",
-                    "type": "uint32"
+                    "type": "uint64"
                 },
                 {
                     "name": "certifierID",
@@ -168,8 +164,16 @@ function getAbiJson() {
                     "type": "uint16"
                 },
                 {
+                    "name": "buildDate",
+                    "type": "uint64"
+                },
+                {
                     "name": "changeDate",
                     "type": "uint64"
+                },
+                {
+                    "name": "customizationGrade",
+                    "type": "uint8"
                 },
                 {
                     "name": "rawData",
@@ -501,10 +505,6 @@ function getAbiJson() {
                             "type": "bytes32"
                         },
                         {
-                            "name": "name3",
-                            "type": "bytes32"
-                        },
-                        {
                             "name": "assetPlainText",
                             "type": "string"
                         },
@@ -514,7 +514,7 @@ function getAbiJson() {
                         },
                         {
                             "name": "id",
-                            "type": "uint32"
+                            "type": "uint64"
                         },
                         {
                             "name": "certifierID",
@@ -525,8 +525,16 @@ function getAbiJson() {
                             "type": "uint16"
                         },
                         {
+                            "name": "buildDate",
+                            "type": "uint64"
+                        },
+                        {
                             "name": "changeDate",
                             "type": "uint64"
+                        },
+                        {
+                            "name": "customizationGrade",
+                            "type": "uint8"
                         },
                         {
                             "name": "rawData",
@@ -545,15 +553,65 @@ function getAbiJson() {
             "constant": true,
             "inputs": [
                 {
-                    "name": "index",
-                    "type": "uint256"
+                    "name": "id",
+                    "type": "uint32"
                 }
             ],
             "name": "getUnique",
             "outputs": [
                 {
+                    "components": [
+                        {
+                            "name": "owner",
+                            "type": "address"
+                        },
+                        {
+                            "name": "name",
+                            "type": "bytes32"
+                        },
+                        {
+                            "name": "name2",
+                            "type": "bytes32"
+                        },
+                        {
+                            "name": "assetPlainText",
+                            "type": "string"
+                        },
+                        {
+                            "name": "imageRessourcesIPFSAddress",
+                            "type": "bytes32"
+                        },
+                        {
+                            "name": "id",
+                            "type": "uint64"
+                        },
+                        {
+                            "name": "certifierID",
+                            "type": "uint32"
+                        },
+                        {
+                            "name": "assetType",
+                            "type": "uint16"
+                        },
+                        {
+                            "name": "buildDate",
+                            "type": "uint64"
+                        },
+                        {
+                            "name": "changeDate",
+                            "type": "uint64"
+                        },
+                        {
+                            "name": "customizationGrade",
+                            "type": "uint8"
+                        },
+                        {
+                            "name": "rawData",
+                            "type": "bytes"
+                        }
+                    ],
                     "name": "",
-                    "type": "bytes32"
+                    "type": "tuple"
                 }
             ],
             "payable": false,
@@ -667,10 +725,6 @@ function getAbiJson() {
                     "type": "bytes32"
                 },
                 {
-                    "name": "name3",
-                    "type": "bytes32"
-                },
-                {
                     "name": "assetPlainText",
                     "type": "string"
                 },
@@ -679,8 +733,16 @@ function getAbiJson() {
                     "type": "bytes32"
                 },
                 {
+                    "name": "buildDate",
+                    "type": "uint64"
+                },
+                {
                     "name": "changeDate",
                     "type": "uint64"
+                },
+                {
+                    "name": "customizationGrade",
+                    "type": "uint8"
                 },
                 {
                     "name": "rawData",
@@ -715,10 +777,6 @@ function getAbiJson() {
                 },
                 {
                     "name": "name2",
-                    "type": "bytes32"
-                },
-                {
-                    "name": "name3",
                     "type": "bytes32"
                 },
                 {

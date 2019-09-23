@@ -12,17 +12,21 @@ export class DmdcuApi {
   public contractJs: any;
   // public cc: Eth["Contract"];
 
+  private defaultGasPrice;
+
   constructor(public web3: web3, public knownContractAddress: string) {
     const contractRaw = new this.web3.eth.Contract(getAbiJson(), this.knownContractAddress);
     this.contract = contractRaw as unknown as DMDCertifiedUnique;
     this.contractJs = contractRaw;
+    this.defaultGasPrice = web3.utils.toHex('100000000000');
   }
 
   public async addNewAssetType(web3account: string, assetTypeName: string) {
-    return this.contract.methods.addAssetType(this.toBytes32String(assetTypeName)).send({ gas: '0x100000', from: web3account });
+    return this.contract.methods.addAssetType(this.toBytes32String(assetTypeName)).send({ gas: '0x100000', gasPrice: this.defaultGasPrice, from: web3account });
   }
 
-  public async addNewCertifier(web3account: string, certifierName: string, officialID: string, mainAddress: string, website: string, text: string, imageIPFSAddress: string) {
+  public async addNewCertifier(web3account: string, certifierName: string, officialID: string,
+                               mainAddress: string, website: string, text: string, imageIPFSAddress: string) {
     const certifierNameHex = this.toBytes32String(certifierName);
     const officialIDHex = this.toBytes32String(officialID);
     const websiteHex = this.toBytes32String(website);
@@ -35,8 +39,10 @@ export class DmdcuApi {
     // }
 
     fromAccount = web3account;
-
-    return this.contract.methods.addCertifier(certifierNameHex, officialIDHex, mainAddress, websiteHex, text, imageIPFSAddressHex).send({ gas: '0x100000', from: fromAccount });
+    const methods = this.contract.methods;
+    return methods.addCertifier(certifierNameHex, officialIDHex, mainAddress,
+                                websiteHex, text, imageIPFSAddressHex).send(
+                                                { gas: '0x100000', gasPrice: this.defaultGasPrice, from: fromAccount });
   }
 
   public async addNewMotorcycle(web3account: string, name: string, name2: string,
@@ -62,7 +68,7 @@ export class DmdcuApi {
       throw Error(`AssetType ${assetType} is not known to this contract. add it first with addNewAssetType.`);
     }
 
-    const result = await this.contract.methods.addNewAsset(assetTypeID, this.toBytes32String(name), this.toBytes32String(name2), assetPlainText, this.toBytes32String(imageRessourcesIPFSAddress), '0x' + this.numberToUInt64Hex(buildDateInLinuxTime), '0x' + this.numberToUInt64Hex(changeDateInLinuxTime), '0x' + this.numberTo8ByteHex(customizationGrade), rawData).send({ gas: '0x100000', from: web3account });
+    const result = await this.contract.methods.addNewAsset(assetTypeID, this.toBytes32String(name), this.toBytes32String(name2), assetPlainText, imageRessourcesIPFSAddress, '0x' + this.numberToUInt64Hex(buildDateInLinuxTime), '0x' + this.numberToUInt64Hex(changeDateInLinuxTime), '0x' + this.numberTo8ByteHex(customizationGrade), rawData).send({ gas: '0x100000', gasPrice: this.defaultGasPrice, from: web3account });
 
     const txReceipt = await this.web3.eth.getTransactionReceipt(result.transactionHash);
     const pastEventsOfContract = await this.contractJs.getPastEvents("Transfer", { fromBlock: txReceipt.blockNumber, toBlock: txReceipt.blockNumber });
@@ -115,7 +121,11 @@ export class DmdcuApi {
   }
 
   public async getCertifier(id: number) {
-    return this.contract.methods.certifiers.call({}, id).call({});
+
+    if (id < 1) {
+      throw Error('certifier ID musst be greater than one!');
+    }
+    return this.contract.methods.certifiers.call({}, id - 1).call({});
   }
 
   public async getIndexOfAssetType(assetType: string): Promise<number> {

@@ -1,8 +1,6 @@
 
 import { DmdcuApi } from './dmdcuApi';
-
 import { UniqMotorcycle, Certifier } from './dmdcuData';
-
 import BN from 'bn.js';
 import web3 from 'web3';
 
@@ -52,12 +50,13 @@ export class DmdcuDataContext {
   // }
 
   private async rawUniqueToMotorcycle(x: IDmdcuRawUnique) : Promise<UniqMotorcycle> {
-    //console.log('unique:', x);
-    //const certifierID = x.certifierID.toNumber();
-    //console.log(`query certifierID: ${x.certifierID}`);
-    const certifier = await this.getCertifier(x.certifierID);
 
-    //TODD: RawData to moto data.
+    // console.log('unique:', x);
+    // const certifierID = x.certifierID.toNumber();
+    // console.log(`query certifierID: ${x.certifierID}`);
+    const certifier = await this.getCertifier(x.certifierID);
+    console.log(`got certifier:  ${x.certifierID}`, certifier);
+    // TODD: RawData to moto data.
     const motoValues = this.api.convertRawDataToMotoValues(x.rawData);
 
     const horsepower = motoValues.horsepower;
@@ -65,14 +64,11 @@ export class DmdcuDataContext {
     const topSpeed = motoValues.topSpeed;
     const vintageGrade = motoValues.vintageGrade;
     const techGrade = motoValues.techGrade;
-    
+
     // Typechain says that customizationGrade is a number field, but web3 in fact returns a 
-    const customizationGrade = parseInt(x.customizationGrade.toString());
+    const customizationGrade = parseInt(x.customizationGrade.toString(), 10);
 
-    console.error('customizationGrade:' + customizationGrade);
-    console.error('customizationGrade Type:' + typeof customizationGrade);
-
-    return new UniqMotorcycle(x.id, x.owner, this.hexStringToUtf8Text(x.name), this.hexStringToUtf8Text(x.name2), x.assetPlainText, x.imageRessourcesIPFSAddress, certifier, x.assetType, new Date(x.buildDate  * 1000),  new Date(x.changeDate * 1000), customizationGrade, horsepower, weight, topSpeed, vintageGrade, techGrade);
+    return new UniqMotorcycle(parseInt(x.id.toString(), 10), x.owner, this.hexStringToUtf8Text(x.name), this.hexStringToUtf8Text(x.name2), x.assetPlainText, x.imageRessourcesIPFSAddress, certifier, x.assetType, new Date(x.buildDate  * 1000),  new Date(x.changeDate * 1000), customizationGrade, horsepower, weight, topSpeed, vintageGrade, techGrade);
   }
 
   public async getAllUniqueMotorcycles(forceRefresh: boolean = false) : Promise<UniqMotorcycle[]> {
@@ -84,15 +80,18 @@ export class DmdcuDataContext {
     // console.log('getAllUniques...');
     const apiResult = await this.api.getAllUniques();
 
+    console.log('got all Uniques: ', apiResult);
+
     for (const x of apiResult) {
 
+      console.log('raw UniqueToMotorcycle: ', x);
       const moto = await this.rawUniqueToMotorcycle(x);
       result.push(moto);
-      //console.log('setting moto: ' + moto.id, moto);
+      console.log('setting moto: ' + moto.id, moto);
       this.motorcycleMapCache.set(moto.id, moto);
-      //console.log('getting moto: ' + moto.id, this.motorcycleMapCache.get(moto.id));
+      console.log('getting moto: ' + moto.id, this.motorcycleMapCache.get(moto.id));
     }
-    //console.log('got all uniques, returning.');
+    console.log('got all uniques, returning.');
     return result;
 
     // apiResult.forEach(x=>{
@@ -134,7 +133,7 @@ export class DmdcuDataContext {
       throw new Error(`Unable to find Asset with ID: ${id}`);
     }
 
-    //WHY THE FUCK FUCKING MAP FUCK does not work ?
+    // WHY THE FUCK FUCKING MAP FUCK does not work ?
 
     // const potentialResult = this.motorcycleMapCache[id];
     // console.log(potentialResult);
@@ -143,12 +142,16 @@ export class DmdcuDataContext {
 
   public async addMotoToBlockchain(moto: UniqMotorcycle) : Promise<BN> {
     const motoID = await this.api.addNewMotorcycle(this.api.web3.eth.defaultAccount, moto.name, moto.name2, moto.assetPlainText, moto.imageRessourcesIPFSAddress, (+(moto.buildDate) / 1000), (+(moto.changeDate) / 1000), moto.customizationGrade,  moto.horsepower, moto.weight, moto.topSpeed, moto.vintageGrade, moto.techGrade);
-    const allMotorCycles = await this.getAllUniqueMotorcycles(true);
+    // const allMotorCycles = await this.getAllUniqueMotorcycles(true);
     return motoID;
     // this.getUniqueMotorcycle(motoID.toNumber());
   }
 
   public async getCertifier(id: number) : Promise<Certifier> {
+
+    if (id < 1) {
+      throw Error('certifier ID musst be greater than one!');
+    }
 
     // premise: only certifier numbers are asked that also exist.
 
@@ -161,7 +164,7 @@ export class DmdcuDataContext {
     }
 
     const raw = await this.api.getCertifier(id);
-    const newCertifier = new Certifier(raw.name, raw.officialID, raw.mainAddress, raw.website, raw.text, raw.imageIPFSAddress);
+    const newCertifier = new Certifier(this.hexStringToUtf8Text(raw.name), this.hexStringToUtf8Text(raw.officialID), raw.mainAddress, this.hexStringToUtf8Text(raw.website), raw.text, raw.imageIPFSAddress);
     this.certifierMapCache.set(id, newCertifier);
     return newCertifier;
   }

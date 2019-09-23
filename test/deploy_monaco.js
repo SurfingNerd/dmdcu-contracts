@@ -69,9 +69,10 @@ contract('DMDCertifiedUnique', (accounts) => {
 
   it('TITAN Motorcycles adds Titan Two', async()=> {
 
+    const titan2ShortText = 'Best of Show CoN Professional Category 2019, Stealth Fighter, Nickname “The Shark”.';
       await api.addNewMotorcycle(titanAccount, 'TITAN Two', 'BMW R45 / R75',
-      'The TITAN No. “Two” is the Follow-Up of the Austrian State Champion’s Bike 2018 TITAN “One” and marks the new Era of TITAN Motorcycle Co. 2.0', dataContext.api.web3.utils.fromUtf8('titan-two-1') , new Date(1978, 02, 01) / 1000,
-      Date.now()/1000,1, 57, 197, 203, 1, 1);
+      titan2ShortText, dataContext.api.web3.utils.fromUtf8('titan-two-1') , new Date(1978, 02, 01) / 1000,
+      Date.now()/1000,4, 57, 197, 203, 1, 1);
   })
 
 });

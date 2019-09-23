@@ -11,6 +11,7 @@
     "build": "truffle compile",
     "typechain": "typechain --target web3-1.0.0 --outDir api/contracts './build/contracts/*.json' && echo NOTE typechain has a bug with embedded datatypes. small number have manually be changed from BN to number in the TS file!",
     "start": "npm-run-all build test",
+    "deploy": "truffle test ./test/deploy_monaco.js --network tau1",
     "tsc": "tsc"
   },
   "repository": {

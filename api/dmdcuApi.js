@@ -42,24 +42,24 @@ var abi_1 = __importDefault(require("./abi"));
 var bn_js_1 = __importDefault(require("bn.js"));
 var web3_1 = __importDefault(require("web3"));
 var DmdcuApi = /** @class */ (function () {
-    // public cc: Eth["Contract"];
     function DmdcuApi(web3, knownContractAddress) {
         this.web3 = web3;
         this.knownContractAddress = knownContractAddress;
         var contractRaw = new this.web3.eth.Contract(abi_1["default"](), this.knownContractAddress);
         this.contract = contractRaw;
         this.contractJs = contractRaw;
+        this.defaultGasPrice = web3.utils.toHex('100000000000');
     }
     DmdcuApi.prototype.addNewAssetType = function (web3account, assetTypeName) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/, this.contract.methods.addAssetType(this.toBytes32String(assetTypeName)).send({ gas: '0x100000', from: web3account })];
+                return [2 /*return*/, this.contract.methods.addAssetType(this.toBytes32String(assetTypeName)).send({ gas: '0x100000', gasPrice: this.defaultGasPrice, from: web3account })];
             });
         });
     };
     DmdcuApi.prototype.addNewCertifier = function (web3account, certifierName, officialID, mainAddress, website, text, imageIPFSAddress) {
         return __awaiter(this, void 0, void 0, function () {
-            var certifierNameHex, officialIDHex, websiteHex, imageIPFSAddressHex, fromAccount;
+            var certifierNameHex, officialIDHex, websiteHex, imageIPFSAddressHex, fromAccount, methods;
             return __generator(this, function (_a) {
                 certifierNameHex = this.toBytes32String(certifierName);
                 officialIDHex = this.toBytes32String(officialID);
@@ -70,7 +70,8 @@ var DmdcuApi = /** @class */ (function () {
                 //   console.log('default account:'  + fromAccount);
                 // }
                 fromAccount = web3account;
-                return [2 /*return*/, this.contract.methods.addCertifier(certifierNameHex, officialIDHex, mainAddress, websiteHex, text, imageIPFSAddressHex).send({ gas: '0x100000', from: fromAccount })];
+                methods = this.contract.methods;
+                return [2 /*return*/, methods.addCertifier(certifierNameHex, officialIDHex, mainAddress, websiteHex, text, imageIPFSAddressHex).send({ gas: '0x100000', gasPrice: this.defaultGasPrice, from: fromAccount })];
             });
         });
     };
@@ -85,7 +86,7 @@ var DmdcuApi = /** @class */ (function () {
     };
     DmdcuApi.prototype.addNewAsset = function (web3account, assetType, name, name2, assetPlainText, imageRessourcesIPFSAddress, buildDateInLinuxTime, changeDateInLinuxTime, customizationGrade, rawData) {
         return __awaiter(this, void 0, void 0, function () {
-            var allAssetTypes, assetTypeID, result, txReceipt, pastEventsOfContract, idUniqueAssetCreated, i, event_1, rawNewID;
+            var allAssetTypes, assetTypeID, imageIPFSAddress, result, txReceipt, pastEventsOfContract, idUniqueAssetCreated, i, event_1, rawNewID;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.getAllAssetTypes()];
@@ -95,7 +96,11 @@ var DmdcuApi = /** @class */ (function () {
                         if (assetTypeID < 0) {
                             throw Error("AssetType " + assetType + " is not known to this contract. add it first with addNewAssetType.");
                         }
-                        return [4 /*yield*/, this.contract.methods.addNewAsset(assetTypeID, this.toBytes32String(name), this.toBytes32String(name2), assetPlainText, this.toBytes32String(imageRessourcesIPFSAddress), '0x' + this.numberToUInt64Hex(buildDateInLinuxTime), '0x' + this.numberToUInt64Hex(changeDateInLinuxTime), '0x' + this.numberTo8ByteHex(customizationGrade), rawData).send({ gas: '0x100000', from: web3account })];
+                        imageIPFSAddress = imageRessourcesIPFSAddress;
+                        if (imageIPFSAddress === undefined || imageIPFSAddress === '') {
+                            imageIPFSAddress = '0x00';
+                        }
+                        return [4 /*yield*/, this.contract.methods.addNewAsset(assetTypeID, this.toBytes32String(name), this.toBytes32String(name2), assetPlainText, imageIPFSAddress, '0x' + this.numberToUInt64Hex(buildDateInLinuxTime), '0x' + this.numberToUInt64Hex(changeDateInLinuxTime), '0x' + this.numberTo8ByteHex(customizationGrade), rawData).send({ gas: '0x100000', gasPrice: this.defaultGasPrice, from: web3account })];
                     case 2:
                         result = _a.sent();
                         return [4 /*yield*/, this.web3.eth.getTransactionReceipt(result.transactionHash)];
@@ -161,7 +166,10 @@ var DmdcuApi = /** @class */ (function () {
     DmdcuApi.prototype.getCertifier = function (id) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/, this.contract.methods.certifiers.call({}, id).call({})];
+                if (id < 1) {
+                    throw Error('certifier ID musst be greater than one!');
+                }
+                return [2 /*return*/, this.contract.methods.certifiers.call({}, id - 1).call({})];
             });
         });
     };

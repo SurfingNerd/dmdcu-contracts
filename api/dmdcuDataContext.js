@@ -59,16 +59,15 @@ var DmdcuDataContext = /** @class */ (function () {
                     case 0: return [4 /*yield*/, this.getCertifier(x.certifierID)];
                     case 1:
                         certifier = _a.sent();
+                        console.log("got certifier:  " + x.certifierID, certifier);
                         motoValues = this.api.convertRawDataToMotoValues(x.rawData);
                         horsepower = motoValues.horsepower;
                         weight = motoValues.weight;
                         topSpeed = motoValues.topSpeed;
                         vintageGrade = motoValues.vintageGrade;
                         techGrade = motoValues.techGrade;
-                        customizationGrade = parseInt(x.customizationGrade.toString());
-                        console.error('customizationGrade:' + customizationGrade);
-                        console.error('customizationGrade Type:' + typeof customizationGrade);
-                        return [2 /*return*/, new dmdcuData_1.UniqMotorcycle(x.id, x.owner, this.hexStringToUtf8Text(x.name), this.hexStringToUtf8Text(x.name2), x.assetPlainText, x.imageRessourcesIPFSAddress, certifier, x.assetType, new Date(x.buildDate * 1000), new Date(x.changeDate * 1000), customizationGrade, horsepower, weight, topSpeed, vintageGrade, techGrade)];
+                        customizationGrade = parseInt(x.customizationGrade.toString(), 10);
+                        return [2 /*return*/, new dmdcuData_1.UniqMotorcycle(parseInt(x.id.toString(), 10), x.owner, this.hexStringToUtf8Text(x.name), this.hexStringToUtf8Text(x.name2), x.assetPlainText, x.imageRessourcesIPFSAddress, certifier, x.assetType, new Date(x.buildDate * 1000), new Date(x.changeDate * 1000), customizationGrade, horsepower, weight, topSpeed, vintageGrade, techGrade)];
                 }
             });
         });
@@ -84,24 +83,27 @@ var DmdcuDataContext = /** @class */ (function () {
                         return [4 /*yield*/, this.api.getAllUniques()];
                     case 1:
                         apiResult = _a.sent();
+                        console.log('got all Uniques: ', apiResult);
                         _i = 0, apiResult_1 = apiResult;
                         _a.label = 2;
                     case 2:
                         if (!(_i < apiResult_1.length)) return [3 /*break*/, 5];
                         x = apiResult_1[_i];
+                        console.log('raw UniqueToMotorcycle: ', x);
                         return [4 /*yield*/, this.rawUniqueToMotorcycle(x)];
                     case 3:
                         moto = _a.sent();
                         result.push(moto);
-                        //console.log('setting moto: ' + moto.id, moto);
+                        console.log('setting moto: ' + moto.id, moto);
                         this.motorcycleMapCache.set(moto.id, moto);
+                        console.log('getting moto: ' + moto.id, this.motorcycleMapCache.get(moto.id));
                         _a.label = 4;
                     case 4:
                         _i++;
                         return [3 /*break*/, 2];
-                    case 5: 
-                    //console.log('got all uniques, returning.');
-                    return [2 /*return*/, result];
+                    case 5:
+                        console.log('got all uniques, returning.');
+                        return [2 /*return*/, result];
                 }
             });
         });
@@ -148,15 +150,13 @@ var DmdcuDataContext = /** @class */ (function () {
     };
     DmdcuDataContext.prototype.addMotoToBlockchain = function (moto) {
         return __awaiter(this, void 0, void 0, function () {
-            var motoID, allMotorCycles;
+            var motoID;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.api.addNewMotorcycle(this.api.web3.eth.defaultAccount, moto.name, moto.name2, moto.assetPlainText, moto.imageRessourcesIPFSAddress, (+(moto.buildDate) / 1000), (+(moto.changeDate) / 1000), moto.customizationGrade, moto.horsepower, moto.weight, moto.topSpeed, moto.vintageGrade, moto.techGrade)];
                     case 1:
                         motoID = _a.sent();
-                        return [4 /*yield*/, this.getAllUniqueMotorcycles(true)];
-                    case 2:
-                        allMotorCycles = _a.sent();
+                        // const allMotorCycles = await this.getAllUniqueMotorcycles(true);
                         return [2 /*return*/, motoID];
                 }
             });
@@ -168,6 +168,9 @@ var DmdcuDataContext = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        if (id < 1) {
+                            throw Error('certifier ID musst be greater than one!');
+                        }
                         // premise: only certifier numbers are asked that also exist.
                         if (this.certifierMapCache.has(id)) {
                             result = this.certifierMapCache.get(id);
@@ -179,7 +182,7 @@ var DmdcuDataContext = /** @class */ (function () {
                         return [4 /*yield*/, this.api.getCertifier(id)];
                     case 1:
                         raw = _a.sent();
-                        newCertifier = new dmdcuData_1.Certifier(raw.name, raw.officialID, raw.mainAddress, raw.website, raw.text, raw.imageIPFSAddress);
+                        newCertifier = new dmdcuData_1.Certifier(this.hexStringToUtf8Text(raw.name), this.hexStringToUtf8Text(raw.officialID), raw.mainAddress, this.hexStringToUtf8Text(raw.website), raw.text, raw.imageIPFSAddress);
                         this.certifierMapCache.set(id, newCertifier);
                         return [2 /*return*/, newCertifier];
                 }

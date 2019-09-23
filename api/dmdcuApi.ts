@@ -46,7 +46,7 @@ export class DmdcuApi {
   }
 
   public async addNewMotorcycle(web3account: string, name: string, name2: string,
-    assetPlainText: string, imageRessourcesIPFSAddress,
+    assetPlainText: string, imageRessourcesIPFSAddress: string,
     buildDateInLinuxTime: number, changeDateInLinuxTime: number, customizationGrade: number, horsepower: number, weight: number, topSpeed: number,
     vintageGrade: number, techGrade: number): Promise<BN> {
 
@@ -56,7 +56,7 @@ export class DmdcuApi {
       buildDateInLinuxTime, changeDateInLinuxTime, customizationGrade, motorcylceValues);
   }
 
-  public async addNewAsset(web3account: string, assetType: string, name: string, name2: string, assetPlainText: string, imageRessourcesIPFSAddress,
+  public async addNewAsset(web3account: string, assetType: string, name: string, name2: string, assetPlainText: string, imageRessourcesIPFSAddress: string,
     buildDateInLinuxTime: number, changeDateInLinuxTime: number, customizationGrade: number, rawData: string): Promise<BN> {
 
     //console.log('rawDataHexString: ' + rawDataHexString);
@@ -68,7 +68,12 @@ export class DmdcuApi {
       throw Error(`AssetType ${assetType} is not known to this contract. add it first with addNewAssetType.`);
     }
 
-    const result = await this.contract.methods.addNewAsset(assetTypeID, this.toBytes32String(name), this.toBytes32String(name2), assetPlainText, imageRessourcesIPFSAddress, '0x' + this.numberToUInt64Hex(buildDateInLinuxTime), '0x' + this.numberToUInt64Hex(changeDateInLinuxTime), '0x' + this.numberTo8ByteHex(customizationGrade), rawData).send({ gas: '0x100000', gasPrice: this.defaultGasPrice, from: web3account });
+    let imageIPFSAddress = imageRessourcesIPFSAddress;
+    if (imageIPFSAddress === undefined || imageIPFSAddress === ''){
+      imageIPFSAddress = '0x00';
+    }
+
+    const result = await this.contract.methods.addNewAsset(assetTypeID, this.toBytes32String(name), this.toBytes32String(name2), assetPlainText, imageIPFSAddress, '0x' + this.numberToUInt64Hex(buildDateInLinuxTime), '0x' + this.numberToUInt64Hex(changeDateInLinuxTime), '0x' + this.numberTo8ByteHex(customizationGrade), rawData).send({ gas: '0x100000', gasPrice: this.defaultGasPrice, from: web3account });
 
     const txReceipt = await this.web3.eth.getTransactionReceipt(result.transactionHash);
     const pastEventsOfContract = await this.contractJs.getPastEvents("Transfer", { fromBlock: txReceipt.blockNumber, toBlock: txReceipt.blockNumber });
